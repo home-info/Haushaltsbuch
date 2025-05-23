@@ -58,7 +58,6 @@ def logout():
 
 
 # Main app content (your original code, wrapped in authentication check)
-@st.cache_data(ttl=3)
 def main_app():
     GITHUB_TOKEN = st.secrets["GitHubToken"]  # Token aus secrets
     REPO_NAME = "home-info/haushaltsbuch"  # z. B. "maxmustermann/form-app"
