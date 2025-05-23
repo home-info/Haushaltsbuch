@@ -10,7 +10,7 @@ import numpy as np
 import os, shutil
 from passlib.hash import bcrypt
 import re
-from github import Github
+
 
 # Function to verify login credentials
 def check_credentials(username, password):
@@ -58,22 +58,6 @@ def logout():
 
 # Main app content (your original code, wrapped in authentication check)
 def main_app():
-    GITHUB_TOKEN = st.secrets["GitHubToken"]  # Token aus secrets
-    REPO_NAME = "home-info/haushaltsbuch"  # z. B. "maxmustermann/form-app"
-    CSV_PATH = "src/database.csv"  # Pfad zur Datei im Repo
-
-    # === GitHub Setup ===
-    g = Github(GITHUB_TOKEN)
-    repo = g.get_repo(REPO_NAME)
-
-    # === Lade aktuelle CSV ===
-    @st.cache_data(ttl=60)
-    def load_database():
-        DataBase_File = repo.get_contents(CSV_PATH)
-        DataBase = pd.read_csv(DataBase_File.download_url, header=None, names=["Datum", "Kategorie", "Betrag"])
-        return DataBase, DataBase_File
-
-
     plt.style.use('seaborn-v0_8')
 
     with open("src/default/DEFAULT_CATEGORIES", "r") as f:
@@ -133,8 +117,7 @@ def main_app():
 
         st.divider()
 
-        # DataBase = pd.read_csv('src/database.csv', header=None, names=["Datum", "Kategorie", "Betrag"])
-        DataBase, DataBase_File = load_database()
+        DataBase = pd.read_csv('src/database.csv', header=None, names=["Datum", "Kategorie", "Betrag"])
         DataBase = DataBase.sort_values('Datum', ascending=False)
         st.dataframe(DataBase, hide_index=True, column_config={"Betrag": st.column_config.NumberColumn(format="euro")})
 
