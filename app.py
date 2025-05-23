@@ -58,6 +58,7 @@ def logout():
 
 
 # Main app content (your original code, wrapped in authentication check)
+@st.cache_data(ttl=60)
 def main_app():
     GITHUB_TOKEN = st.secrets["GitHubToken"]  # Token aus secrets
     REPO_NAME = "home-info/haushaltsbuch"  # z. B. "maxmustermann/form-app"
@@ -66,7 +67,6 @@ def main_app():
     g = Github(GITHUB_TOKEN)
     repo = g.get_repo(REPO_NAME)
 
-    @st.cache_data(ttl=60)
 
     plt.style.use('seaborn-v0_8')
 
