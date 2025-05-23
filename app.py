@@ -58,7 +58,6 @@ def logout():
 
 
 # Main app content (your original code, wrapped in authentication check)
-# @st.cache_data(ttl=3)
 def main_app():
     GITHUB_TOKEN = st.secrets["GitHubToken"]  # Token aus secrets
     REPO_NAME = "home-info/haushaltsbuch"  # z. B. "maxmustermann/form-app"
@@ -82,6 +81,7 @@ def main_app():
                 try:
                     dataset = f'{Input_Date},{Input_Category},{Input_Amount}'
                     repo.update_file(DataBase_File.path, "NEW COMMIT", f'{DataBase_File.decoded_content.decode("utf-8")}\n{dataset}', DataBase_File.sha)
+                    st.cache_data.clear()
                     with tab1_status_col:
                         st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
                 except:
