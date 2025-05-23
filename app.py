@@ -60,19 +60,12 @@ def logout():
 def main_app():
     GITHUB_TOKEN = st.secrets["GitHubToken"]  # Token aus secrets
     REPO_NAME = "home-info/haushaltsbuch"  # z. B. "maxmustermann/form-app"
-    CSV_PATH = "src/database.csv"  # Pfad zur Datei im Repo
 
     # === GitHub Setup ===
     g = Github(GITHUB_TOKEN)
     repo = g.get_repo(REPO_NAME)
 
-    # === Lade aktuelle CSV ===
     @st.cache_data(ttl=60)
-    def load_database():
-        DataBase_File = repo.get_contents(CSV_PATH)
-        DataBase = pd.read_csv(DataBase_File.download_url, header=None, names=["Datum", "Kategorie", "Betrag"])
-        return DataBase, DataBase_File
-
 
     plt.style.use('seaborn-v0_8')
 
@@ -85,13 +78,15 @@ def main_app():
     def SaveClear():
         if not Input_Category == "" or None:
             if not Input_Amount == 0:
-                with tab1_status_col:
-                    st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
-                dataset = [str(Input_Date), str(Input_Category), float(Input_Amount)]
-                with open("src/database.csv", "a", newline='') as db:
-                    writer = csv.writer(db)
-                    writer.writerow(dataset)
-                db.close()
+                try:
+                    dataset = f'{Input_Date},{Input_Category},{Input_Amount}'
+                    repo.update_file(DataBase_File.path, "NEW COMMIT", DataBase_File + dataset, DataBase_File.sha)
+                    with tab1_status_col:
+                        st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
+                except:
+                    with tab1_status_col:
+                        st.error(f"Problem beim Speichern im Respository...")
+                
                 st.session_state["DATE_KEY"] = f"{TODAY}"
                 st.session_state["CATEGORY_KEY"] = ""
                 st.session_state["AMOUNT_KEY"] = 0.00
@@ -103,11 +98,6 @@ def main_app():
                 st.error("Kategorie darf nicht leer sein!")
 
     with tab1:
-        try:
-            locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
-        except locale.Error:
-            locale.setlocale(locale.LC_TIME, '')
-
         TODAY = datetime.date.today()
         st.title("Neue Ausgabe")
         tab1_col1, tab1_col2, tab1_col3 = st.columns(3)
@@ -134,8 +124,10 @@ def main_app():
         st.divider()
 
         # DataBase = pd.read_csv('src/database.csv', header=None, names=["Datum", "Kategorie", "Betrag"])
-        DataBase, DataBase_File = load_database()
+        DataBase_File = repo.get_contents('src/database.csv')
+        DataBase = pd.read_csv(DataBase_File.download_url, header=None, names=["Datum", "Kategorie", "Betrag"])
         DataBase = DataBase.sort_values('Datum', ascending=False)
+
         st.dataframe(DataBase, hide_index=True, column_config={"Betrag": st.column_config.NumberColumn(format="euro")})
 
         # Add logout button
