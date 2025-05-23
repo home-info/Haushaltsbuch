@@ -12,6 +12,7 @@ from passlib.hash import bcrypt
 import re
 from github import Github
 
+
 # Function to verify login credentials
 def check_credentials(username, password):
     try:
@@ -86,7 +87,7 @@ def main_app():
                 except:
                     with tab1_status_col:
                         st.error(f"Problem beim Speichern im Respository...")
-                
+
                 st.session_state["DATE_KEY"] = f"{TODAY}"
                 st.session_state["CATEGORY_KEY"] = ""
                 st.session_state["AMOUNT_KEY"] = 0.00
@@ -266,9 +267,11 @@ def main_app():
                 "11": "November",
                 "12": "Dezember"
             }
+
             def ersetze_monate(match):
                 monat = match.group(1)
                 return monatsname.get(monat, monat) + " "
+
             Month_Verbal = re.sub(r'\b(0[1-9]|1[0-2])-', ersetze_monate, month)
 
             with st.container(border=True):
