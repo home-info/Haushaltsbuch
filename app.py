@@ -86,7 +86,8 @@ def main_app():
                 st.error("Kategorie darf nicht leer sein!")
 
     with tab1:
-        locale.setlocale(locale.LC_TIME, 'de_DE')
+        locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
+
         TODAY = datetime.date.today()
         st.title("Neue Ausgabe")
         tab1_col1, tab1_col2, tab1_col3 = st.columns(3)
