@@ -80,7 +80,7 @@ def main_app():
         if not Input_Category == "" or None:
             if not Input_Amount == 0:
                 dataset = f'{Input_Date},{Input_Category},{Input_Amount}'
-                repo.update_file(DataBase_File.path, "NEW COMMIT", f'{DataBase_File}\n{dataset}', DataBase_File.sha)
+                repo.update_file(DataBase_File.path, "NEW COMMIT", f'{DataBase_File.decoded_content.decode("utf-8")}\n{dataset}', DataBase_File.sha)
                 with tab1_status_col:
                     st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
 
