@@ -58,6 +58,7 @@ def logout():
 
 
 # Main app content (your original code, wrapped in authentication check)
+@st.cache_data(ttl=3)
 def main_app():
     GITHUB_TOKEN = st.secrets["GitHubToken"]  # Token aus secrets
     REPO_NAME = "home-info/haushaltsbuch"  # z. B. "maxmustermann/form-app"
@@ -75,7 +76,6 @@ def main_app():
 
     tab1, tab2, tab3 = st.tabs(["Neue Ausgabe", "Jahresübersicht", "Budget"])
 
-    @st.cache_data.clear()
     def SaveClear():
         if not Input_Category == "" or None:
             if not Input_Amount == 0:
