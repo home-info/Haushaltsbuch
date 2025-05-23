@@ -58,7 +58,7 @@ def logout():
 
 
 # Main app content (your original code, wrapped in authentication check)
-# @st.cache_data(ttl=60)
+# @st.cache_data(ttl=3)
 def main_app():
     GITHUB_TOKEN = st.secrets["GitHubToken"]  # Token aus secrets
     REPO_NAME = "home-info/haushaltsbuch"  # z. B. "maxmustermann/form-app"
@@ -91,7 +91,6 @@ def main_app():
                 st.session_state["DATE_KEY"] = f"{TODAY}"
                 st.session_state["CATEGORY_KEY"] = ""
                 st.session_state["AMOUNT_KEY"] = 0.00
-                st.cache_data.clear()
             else:
                 with tab1_status_col:
                     st.error("Der Betrag darf nicht Null sein!")
