@@ -241,7 +241,26 @@ def main_app():
 
         st.title("Budget")
         for month in reversed(balance_sheet):
-            Month_Verbal = datetime.datetime.strptime(month, "%m-%Y").strftime("%B %Y")
+            # Month_Verbal = datetime.datetime.strptime(month, "%m-%Y").strftime("%B %Y")
+            monatsname = {
+                "01": "Januar",
+                "02": "Februar",
+                "03": "März",
+                "04": "April",
+                "05": "Mai",
+                "06": "Juni",
+                "07": "Juli",
+                "08": "August",
+                "09": "September",
+                "10": "Oktober",
+                "11": "November",
+                "12": "Dezember"
+            }
+            def ersetze_monate(match):
+                monat = match.group(1)
+                return monatsname.get(monat, monat) + " "
+            Month_Verbal = re.sub(r'\b(0[1-9]|1[0-2])-', ersetze_monate, text)
+
             with st.container(border=True):
                 st.subheader(Month_Verbal)
 
