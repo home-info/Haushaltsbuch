@@ -86,7 +86,10 @@ def main_app():
                 st.error("Kategorie darf nicht leer sein!")
 
     with tab1:
-        locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
+        try:
+            locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
+        except locale.Error:
+            locale.setlocale(locale.LC_TIME, '')
 
         TODAY = datetime.date.today()
         st.title("Neue Ausgabe")
