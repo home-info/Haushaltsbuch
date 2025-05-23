@@ -79,14 +79,10 @@ def main_app():
     def SaveClear():
         if not Input_Category == "" or None:
             if not Input_Amount == 0:
-                try:
-                    dataset = f'{Input_Date},{Input_Category},{Input_Amount}'
-                    repo.update_file(DataBase_File.path, "NEW COMMIT", DataBase_File + dataset, DataBase_File.sha)
-                    with tab1_status_col:
-                        st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
-                except:
-                    with tab1_status_col:
-                        st.error(f"Problem beim Speichern im Respository...")
+                dataset = f'{Input_Date},{Input_Category},{Input_Amount}'
+                repo.update_file(DataBase_File.path, "NEW COMMIT", DataBase_File + dataset, DataBase_File.sha)
+                with tab1_status_col:
+                    st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
 
                 st.session_state["DATE_KEY"] = f"{TODAY}"
                 st.session_state["CATEGORY_KEY"] = ""
