@@ -79,14 +79,19 @@ def main_app():
     def SaveClear():
         if not Input_Category == "" or None:
             if not Input_Amount == 0:
-                dataset = f'{Input_Date},{Input_Category},{Input_Amount}'
-                repo.update_file(DataBase_File.path, "NEW COMMIT", f'{DataBase_File.decoded_content.decode("utf-8")}\n{dataset}', DataBase_File.sha)
-                with tab1_status_col:
-                    st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
+                try:
+                    dataset = f'{Input_Date},{Input_Category},{Input_Amount}'
+                    repo.update_file(DataBase_File.path, "NEW COMMIT", f'{DataBase_File.decoded_content.decode("utf-8")}\n{dataset}', DataBase_File.sha)
+                    with tab1_status_col:
+                        st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
+                except:
+                    with tab1_status_col:
+                        st.error("Fehler beim Speichern!")
 
                 st.session_state["DATE_KEY"] = f"{TODAY}"
                 st.session_state["CATEGORY_KEY"] = ""
                 st.session_state["AMOUNT_KEY"] = 0.00
+                st.cache_data.clear()
             else:
                 with tab1_status_col:
                     st.error("Der Betrag darf nicht Null sein!")
