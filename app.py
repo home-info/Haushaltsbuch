@@ -9,6 +9,7 @@ import seaborn as sns
 import numpy as np
 import os, shutil
 from passlib.hash import bcrypt
+import re
 
 
 # Function to verify login credentials
