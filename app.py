@@ -260,7 +260,7 @@ def main_app():
             def ersetze_monate(match):
                 monat = match.group(1)
                 return monatsname.get(monat, monat) + " "
-            Month_Verbal = re.sub(r'\b(0[1-9]|1[0-2])-', ersetze_monate, text)
+            Month_Verbal = re.sub(r'\b(0[1-9]|1[0-2])-', ersetze_monate, month)
 
             with st.container(border=True):
                 st.subheader(Month_Verbal)
