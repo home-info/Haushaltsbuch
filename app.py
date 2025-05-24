@@ -58,6 +58,25 @@ def logout():
 
 # Main app content (your original code, wrapped in authentication check)
 def main_app():
+    monatsname = {
+        "01": "Januar",
+        "02": "Februar",
+        "03": "März",
+        "04": "April",
+        "05": "Mai",
+        "06": "Juni",
+        "07": "Juli",
+        "08": "August",
+        "09": "September",
+        "10": "Oktober",
+        "11": "November",
+        "12": "Dezember"
+    }
+
+    def ersetze_monate(match):
+        monat = match.group(1)
+        return monatsname.get(monat, monat) + " "
+    
     plt.style.use('seaborn-v0_8')
 
     with open("src/default/DEFAULT_CATEGORIES", "r") as f:
@@ -237,25 +256,6 @@ def main_app():
 
         st.title("Budget")
         for month in reversed(balance_sheet):
-            monatsname = {
-                "01": "Januar",
-                "02": "Februar",
-                "03": "März",
-                "04": "April",
-                "05": "Mai",
-                "06": "Juni",
-                "07": "Juli",
-                "08": "August",
-                "09": "September",
-                "10": "Oktober",
-                "11": "November",
-                "12": "Dezember"
-            }
-
-            def ersetze_monate(match):
-                monat = match.group(1)
-                return monatsname.get(monat, monat) + " "
-
             Month_Verbal = re.sub(r'\b(0[1-9]|1[0-2])-', ersetze_monate, month)
 
             with st.container(border=True):
