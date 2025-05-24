@@ -102,11 +102,11 @@ def main_app():
                     writer = csv.writer(db)
                     writer.writerow(dataset)
                 db.close()
-                with open("src/database.csv", "r", newline='') as db:
-                    reader = csv.reader(db)
-                db.close()
-                DataBase_Respository = repo.get_contents('src/database.csv')
-                repo.update_file(DataBase_Respository.path, "NEW COMMIT", reader, DataBase_Respository.sha)
+                with open("src/database.csv", "rb") as local_file:
+                    new_file = local_file.read()
+                contents = repo.get_contents('src/database.csv')
+                repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
+
                 st.session_state["DATE_KEY"] = f"{TODAY}"
                 st.session_state["CATEGORY_KEY"] = ""
                 st.session_state["AMOUNT_KEY"] = 0.00
