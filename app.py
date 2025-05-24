@@ -226,10 +226,15 @@ def main_app():
         CurrentMonth = TODAY.strftime('%m-%Y')
 
         if not os.path.exists(f'src/overhead/{CurrentMonth}'):
-            shutil.copy('src/default/DEFAULT_OVERHEAD', f'src/overhead/{CurrentMonth}')
+            with open('src/default/DEFAULT_OVERHEAD', 'rb') as f:
+                new_file = f.read()
+            repo.create_file(f'src/overhead/{CurrentMonth}', 'new file', new_file)
 
         if not os.path.exists(f'src/revenues/{CurrentMonth}'):
-            shutil.copy('src/default/DEFAULT_REVENUES', f'src/revenues/{CurrentMonth}')
+            # shutil.copy('src/default/DEFAULT_REVENUES', f'src/revenues/{CurrentMonth}')
+            with open('src/default/DEFAULT_REVENUES', 'rb') as f:
+                new_file = f.read()
+            repo.create_file(f'src/revenues/{CurrentMonth}', 'new file', new_file)
 
         for entry in sorted(os.listdir('src/overhead')):
             Overhead_FilePath = f'src/overhead/{entry}'
