@@ -286,7 +286,7 @@ def main_app():
 
                     if balance_sheet[month]['Balance'] >= 0:
                         st.html(
-                            f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='color: black; background-color: #ebf2fb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Balance']:,.2f} €</b></span></div>")
+                            f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='color:black; background-color: #ebf2fb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Balance']:,.2f} €</b></span></div>")
                         used_budget = (1 - (balance_sheet[month]['Balance'] / balance_sheet[month]['Budget']))
                         st.progress(used_budget, text=f'{used_budget * 100:.0f} % vom Budget sind bereits ausgegeben.')
                     else:
