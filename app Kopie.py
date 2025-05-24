@@ -59,8 +59,8 @@ def logout():
 
 # Main app content (your original code, wrapped in authentication check)
 def main_app():
-    GITHUB_TOKEN = st.secrets["GitHubToken"]
-    REPO_NAME = "home-info/haushaltsbuch"
+    GITHUB_TOKEN = st.secrets["GitHubToken"]  # Token aus secrets
+    REPO_NAME = "home-info/haushaltsbuch"  # z. B. "maxmustermann/form-app"
 
     # === GitHub Setup ===
     g = Github(GITHUB_TOKEN)
@@ -78,13 +78,15 @@ def main_app():
     def SaveClear():
         if not Input_Category == "" or None:
             if not Input_Amount == 0:
-                dataset = [str(Input_Date), str(Input_Category), float(Input_Amount)]
-                with open("src/database.csv", "a", newline='') as db:
-                    writer = csv.writer(db)
-                    writer.writerow(dataset)
-                db.close()
-                with tab1_status_col:
-                    st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
+                try:
+                    dataset = f'{Input_Date},{Input_Category},{Input_Amount}'
+                    repo.update_file(DataBase_File.path, "NEW COMMIT", f'{DataBase_File.decoded_content.decode("utf-8")}\n{dataset}', DataBase_File.sha)
+                    with tab1_status_col:
+                        st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
+                except:
+                    with tab1_status_col:
+                        st.error("Fehler beim Speichern!")
+
                 st.session_state["DATE_KEY"] = f"{TODAY}"
                 st.session_state["CATEGORY_KEY"] = ""
                 st.session_state["AMOUNT_KEY"] = 0.00
@@ -111,7 +113,8 @@ def main_app():
 
         with tab1_col3:
             st.session_state.setdefault("AMOUNT_KEY", 0.00)
-            Input_Amount = st.number_input(label="Betrag (€)", min_value=0.00, step=0.01, format="%.2f",key="AMOUNT_KEY")
+            Input_Amount = st.number_input(label="Betrag (€)", min_value=0.00, step=0.01, format="%.2f",
+                                           key="AMOUNT_KEY")
 
         st.button("Speichern", on_click=SaveClear)
 
@@ -120,8 +123,9 @@ def main_app():
 
         st.divider()
 
-        DataBase = pd.read_csv('src/database.csv', header=None, names=["Datum", "Kategorie", "Betrag"])
-        DataBase = pd.read_csv(DataBase, header=None, names=["Datum", "Kategorie", "Betrag"])
+        # DataBase = pd.read_csv('src/database.csv', header=None, names=["Datum", "Kategorie", "Betrag"])
+        DataBase_File = repo.get_contents('src/database.csv')
+        DataBase = pd.read_csv(DataBase_File.download_url, header=None, names=["Datum", "Kategorie", "Betrag"])
         DataBase = DataBase.sort_values('Datum', ascending=False)
 
         st.dataframe(DataBase, hide_index=True, column_config={"Betrag": st.column_config.NumberColumn(format="euro")})
