@@ -148,8 +148,8 @@ def main_app():
         DataBase = DataBase.sort_values('Datum', ascending=False)
         st.dataframe(DataBase, hide_index=True, column_config={"Betrag": st.column_config.NumberColumn(format="euro")})
 
-    # Add logout button
-    st.button("Ausloggen", on_click=logout)
+        # Add logout button
+        st.button("Ausloggen", on_click=logout)
 
     with tab2:
         st.title("Jahresübersicht")
