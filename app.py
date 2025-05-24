@@ -9,6 +9,7 @@ import seaborn as sns
 import numpy as np
 import os, shutil
 from passlib.hash import bcrypt
+import re
 
 
 # Function to verify login credentials
@@ -86,7 +87,6 @@ def main_app():
                 st.error("Kategorie darf nicht leer sein!")
 
     with tab1:
-        locale.setlocale(locale.LC_TIME, 'de_DE')
         TODAY = datetime.date.today()
         st.title("Neue Ausgabe")
         tab1_col1, tab1_col2, tab1_col3 = st.columns(3)
@@ -237,7 +237,27 @@ def main_app():
 
         st.title("Budget")
         for month in reversed(balance_sheet):
-            Month_Verbal = datetime.datetime.strptime(month, "%m-%Y").strftime("%B %Y")
+            monatsname = {
+                "01": "Januar",
+                "02": "Februar",
+                "03": "März",
+                "04": "April",
+                "05": "Mai",
+                "06": "Juni",
+                "07": "Juli",
+                "08": "August",
+                "09": "September",
+                "10": "Oktober",
+                "11": "November",
+                "12": "Dezember"
+            }
+
+            def ersetze_monate(match):
+                monat = match.group(1)
+                return monatsname.get(monat, monat) + " "
+
+            Month_Verbal = re.sub(r'\b(0[1-9]|1[0-2])-', ersetze_monate, month)
+
             with st.container(border=True):
                 st.subheader(Month_Verbal)
 
