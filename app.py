@@ -10,6 +10,7 @@ import numpy as np
 import os, shutil
 from passlib.hash import bcrypt
 import re
+from github import Github
 
 
 # Function to verify login credentials
@@ -58,6 +59,12 @@ def logout():
 
 # Main app content (your original code, wrapped in authentication check)
 def main_app():
+    # === GitHub Setup ===
+    GITHUB_TOKEN = st.secrets["GitHubToken"]
+    REPO_NAME = "home-info/haushaltsbuch"
+    g = Github(GITHUB_TOKEN)
+    repo = g.get_repo(REPO_NAME)
+
     monatsname = {
         "01": "Januar",
         "02": "Februar",
@@ -95,6 +102,11 @@ def main_app():
                     writer = csv.writer(db)
                     writer.writerow(dataset)
                 db.close()
+                with open("src/database.csv", "r", newline='') as db:
+                    reader = csv.reader(db)
+                db.close()
+                DataBase_Respository = repo.get_contents('src/database.csv')
+                repo.update_file(DataBase_Respository.path, "NEW COMMIT", reader, DataBase_File.sha)
                 st.session_state["DATE_KEY"] = f"{TODAY}"
                 st.session_state["CATEGORY_KEY"] = ""
                 st.session_state["AMOUNT_KEY"] = 0.00
@@ -104,6 +116,7 @@ def main_app():
         else:
             with tab1_status_col:
                 st.error("Kategorie darf nicht leer sein!")
+
 
     with tab1:
         TODAY = datetime.date.today()
