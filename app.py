@@ -9,8 +9,6 @@ import seaborn as sns
 import numpy as np
 import os, shutil
 from passlib.hash import bcrypt
-import re
-from github import Github
 
 
 # Function to verify login credentials
@@ -59,14 +57,6 @@ def logout():
 
 # Main app content (your original code, wrapped in authentication check)
 def main_app():
-    GITHUB_TOKEN = st.secrets["GitHubToken"]
-    REPO_NAME = "home-info/haushaltsbuch"
-
-    # === GitHub Setup ===
-    g = Github(GITHUB_TOKEN)
-    repo = g.get_repo(REPO_NAME)
-
-
     plt.style.use('seaborn-v0_8')
 
     with open("src/default/DEFAULT_CATEGORIES", "r") as f:
@@ -78,13 +68,13 @@ def main_app():
     def SaveClear():
         if not Input_Category == "" or None:
             if not Input_Amount == 0:
+                with tab1_status_col:
+                    st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
                 dataset = [str(Input_Date), str(Input_Category), float(Input_Amount)]
                 with open("src/database.csv", "a", newline='') as db:
                     writer = csv.writer(db)
                     writer.writerow(dataset)
                 db.close()
-                with tab1_status_col:
-                    st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
                 st.session_state["DATE_KEY"] = f"{TODAY}"
                 st.session_state["CATEGORY_KEY"] = ""
                 st.session_state["AMOUNT_KEY"] = 0.00
@@ -96,6 +86,7 @@ def main_app():
                 st.error("Kategorie darf nicht leer sein!")
 
     with tab1:
+        locale.setlocale(locale.LC_TIME, 'de_DE')
         TODAY = datetime.date.today()
         st.title("Neue Ausgabe")
         tab1_col1, tab1_col2, tab1_col3 = st.columns(3)
@@ -111,7 +102,8 @@ def main_app():
 
         with tab1_col3:
             st.session_state.setdefault("AMOUNT_KEY", 0.00)
-            Input_Amount = st.number_input(label="Betrag (€)", min_value=0.00, step=0.01, format="%.2f",key="AMOUNT_KEY")
+            Input_Amount = st.number_input(label="Betrag (€)", min_value=0.00, step=0.01, format="%.2f",
+                                           key="AMOUNT_KEY")
 
         st.button("Speichern", on_click=SaveClear)
 
@@ -121,13 +113,11 @@ def main_app():
         st.divider()
 
         DataBase = pd.read_csv('src/database.csv', header=None, names=["Datum", "Kategorie", "Betrag"])
-        DataBase = pd.read_csv(DataBase, header=None, names=["Datum", "Kategorie", "Betrag"])
         DataBase = DataBase.sort_values('Datum', ascending=False)
-
         st.dataframe(DataBase, hide_index=True, column_config={"Betrag": st.column_config.NumberColumn(format="euro")})
 
-        # Add logout button
-        st.button("Ausloggen", on_click=logout)
+    # Add logout button
+    st.button("Ausloggen", on_click=logout)
 
     with tab2:
         st.title("Jahresübersicht")
@@ -247,28 +237,7 @@ def main_app():
 
         st.title("Budget")
         for month in reversed(balance_sheet):
-            # Month_Verbal = datetime.datetime.strptime(month, "%m-%Y").strftime("%B %Y")
-            monatsname = {
-                "01": "Januar",
-                "02": "Februar",
-                "03": "März",
-                "04": "April",
-                "05": "Mai",
-                "06": "Juni",
-                "07": "Juli",
-                "08": "August",
-                "09": "September",
-                "10": "Oktober",
-                "11": "November",
-                "12": "Dezember"
-            }
-
-            def ersetze_monate(match):
-                monat = match.group(1)
-                return monatsname.get(monat, monat) + " "
-
-            Month_Verbal = re.sub(r'\b(0[1-9]|1[0-2])-', ersetze_monate, month)
-
+            Month_Verbal = datetime.datetime.strptime(month, "%m-%Y").strftime("%B %Y")
             with st.container(border=True):
                 st.subheader(Month_Verbal)
 
@@ -286,7 +255,7 @@ def main_app():
 
                     if balance_sheet[month]['Balance'] >= 0:
                         st.html(
-                            f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='color: black !important; background-color: #ebf2fb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Balance']:,.2f} €</b></span></div>")
+                            f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='background-color: #ebf2fb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Balance']:,.2f} €</b></span></div>")
                         used_budget = (1 - (balance_sheet[month]['Balance'] / balance_sheet[month]['Budget']))
                         st.progress(used_budget, text=f'{used_budget * 100:.0f} % vom Budget sind bereits ausgegeben.')
                     else:
