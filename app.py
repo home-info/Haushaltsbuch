@@ -106,7 +106,7 @@ def main_app():
                     reader = csv.reader(db)
                 db.close()
                 DataBase_Respository = repo.get_contents('src/database.csv')
-                repo.update_file(DataBase_Respository.path, "NEW COMMIT", reader, DataBase_File.sha)
+                repo.update_file(DataBase_Respository.path, "NEW COMMIT", reader, DataBase_Respository.sha)
                 st.session_state["DATE_KEY"] = f"{TODAY}"
                 st.session_state["CATEGORY_KEY"] = ""
                 st.session_state["AMOUNT_KEY"] = 0.00
