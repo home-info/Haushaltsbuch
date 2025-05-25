@@ -121,10 +121,10 @@ def main_app():
     with tab1:
         TODAY = datetime.date.today()
         st.title("Neue Ausgabe")
-        tab1_col1, tab1_col2, tab1_col3 = st.columns(3)
-        tab1_status_col = st.container()
 
         with st.container(border=True):
+            tab1_col1, tab1_col2, tab1_col3 = st.columns(3)
+            tab1_status_col = st.container()
             with tab1_col1:
                 st.session_state.setdefault("DATUM_KEY", f"{TODAY}")
                 Input_Date = st.text_input("Datum", key="DATUM_KEY")
