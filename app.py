@@ -292,12 +292,12 @@ def main_app():
 
                     if balance_sheet[month]['Balance'] >= 0:
                         st.html(
-                            f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='background-color: #ebf2fb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Balance']:,.2f} €</b></span></div>")
+                            f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='color: black !important; background-color: #ebf2fb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Balance']:,.2f} €</b></span></div>")
                         used_budget = (1 - (balance_sheet[month]['Balance'] / balance_sheet[month]['Budget']))
                         st.progress(used_budget, text=f'{used_budget * 100:.0f} % vom Budget sind bereits ausgegeben.')
                     else:
                         st.html(
-                            f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='background-color: #f2f2f4; border-radius: 5px; padding: 2px 5px;'><b>0.00 €</b></span></div>")
+                            f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='color: black !important; background-color: #f2f2f4; border-radius: 5px; padding: 2px 5px;'><b>0.00 €</b></span></div>")
                         st.progress(100, text=f'Budget vollständig ausgegeben oder überzogen.')
                     st.write(" ")
                     st.dataframe(monthly_data, hide_index=True,
@@ -305,19 +305,19 @@ def main_app():
 
                 with subcol2:
                     st.html(
-                        f"<div style='display: flex; justify-content: space-between;'><span><b>Einnahmen:</b></span> <span style='background-color: #eef9ef; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Revenue']:,.2f} €</b></span></div>")
+                        f"<div style='display: flex; justify-content: space-between;'><span><b>Einnahmen:</b></span> <span style='color: black !important; background-color: #eef9ef; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Revenue']:,.2f} €</b></span></div>")
                     st.dataframe(balance_sheet[month]['Revenue_Data'], hide_index=True,
                                  column_config={"Betrag": st.column_config.NumberColumn(format="euro")})
 
                 with subcol3:
                     st.html(
-                        f"<div style='display: flex; justify-content: space-between;'><span><b>Fixkosten:</b></span> <span style='background-color: #fdeceb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Overhead']:,.2f} €</b></span></div>")
+                        f"<div style='display: flex; justify-content: space-between;'><span><b>Fixkosten:</b></span> <span style='color: black !important; background-color: #fdeceb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Overhead']:,.2f} €</b></span></div>")
                     st.dataframe(balance_sheet[month]['Overhead_Data'], hide_index=True,
                                  column_config={"Betrag": st.column_config.NumberColumn(format="euro")})
 
                 with subcol4:
                     st.html(
-                        f"<div style='display: flex; justify-content: space-between;'><span><b>Ausgaben:</b></span> <span style='background-color: #fdeceb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Expenses']:,.2f} €</b></span></div>")
+                        f"<div style='display: flex; justify-content: space-between;'><span><b>Ausgaben:</b></span> <span style='color: black !important; background-color: #fdeceb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Expenses']:,.2f} €</b></span></div>")
                     MonthlyExpenses_Category, MonthlyExpenses_CategorySum = zip(*balance_sheet[month]['Expenses_Data'])
                     start_color = np.array([.86, .23, .15])
                     end_color = np.array([.94, .74, .25])
