@@ -143,8 +143,6 @@ def main_app():
             with tab1_status_col:
                 st.empty()
 
-        st.divider()
-
         DataBase = pd.read_csv('src/database.csv', header=None, names=["Datum", "Kategorie", "Betrag"])
         DataBase = DataBase.sort_values('Datum', ascending=False)
         st.dataframe(DataBase, hide_index=True, column_config={"Betrag": st.column_config.NumberColumn(format="euro")})
