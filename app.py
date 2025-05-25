@@ -124,23 +124,24 @@ def main_app():
         tab1_col1, tab1_col2, tab1_col3 = st.columns(3)
         tab1_status_col = st.container()
 
-        with tab1_col1:
-            st.session_state.setdefault("DATUM_KEY", f"{TODAY}")
-            Input_Date = st.text_input("Datum", key="DATUM_KEY")
+        with st.container(border=True):
+            with tab1_col1:
+                st.session_state.setdefault("DATUM_KEY", f"{TODAY}")
+                Input_Date = st.text_input("Datum", key="DATUM_KEY")
 
-        with tab1_col2:
-            st.session_state.setdefault("CATEGORY_KEY", "")
-            Input_Category = st.selectbox("Kategorie", CategoryList, key="CATEGORY_KEY")
+            with tab1_col2:
+                st.session_state.setdefault("CATEGORY_KEY", "")
+                Input_Category = st.selectbox("Kategorie", CategoryList, key="CATEGORY_KEY")
 
-        with tab1_col3:
-            st.session_state.setdefault("AMOUNT_KEY", 0.00)
-            Input_Amount = st.number_input(label="Betrag (€)", min_value=0.00, step=0.01, format="%.2f",
-                                           key="AMOUNT_KEY")
+            with tab1_col3:
+                st.session_state.setdefault("AMOUNT_KEY", 0.00)
+                Input_Amount = st.number_input(label="Betrag (€)", min_value=0.00, step=0.01, format="%.2f",
+                                               key="AMOUNT_KEY")
 
-        st.button("Speichern", on_click=SaveClear)
+            st.button("Speichern", on_click=SaveClear)
 
-        with tab1_status_col:
-            st.empty()
+            with tab1_status_col:
+                st.empty()
 
         st.divider()
 
