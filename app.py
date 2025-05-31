@@ -351,7 +351,7 @@ def main_app():
                     st.session_state[Target_FileName] = pickle.load(f)
                 f.close()
 
-                if st.session_state[Target_FileName]['status'] == False or True:
+                if st.session_state[Target_FileName]['status'] == False:
                     Target_Index += 1
                     Target_PayIn_List = st.session_state[Target_FileName]['einzahlungen']
                     Target_PayIn_Sum = sum(Target_PayIn_List['Betrag'])
