@@ -387,7 +387,7 @@ def main_app():
                                 st.session_state[PayIn_EditorKey],
                                 hide_index=True,
                                 num_rows="dynamic",
-                                column_config={"Betrag": st.column_config.NumberColumn(format="euro")},
+                                column_config={"Betrag": st.column_config.NumberColumn(format="euro", step=0.01)},
                                 key=f"EditorKey_{PayIn_EditorKey}",
                                 use_container_width=True
                             )
@@ -404,7 +404,7 @@ def main_app():
                                 st.session_state[PayOut_EditorKey],
                                 hide_index=True,
                                 num_rows="dynamic",
-                                column_config={"Betrag": st.column_config.NumberColumn(format="euro")},
+                                column_config={"Betrag": st.column_config.NumberColumn(format="euro", step=0.01)},
                                 key=f"EditorKey_{PayOut_EditorKey}",
                                 use_container_width=True
                             )
