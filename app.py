@@ -91,7 +91,7 @@ def main_app():
         CategoryList = sorted([str(line.strip()) for line in f])
     f.close()
 
-    tab1, tab2, tab3 = st.tabs(["Neue Ausgabe", "Jahresübersicht", "Budget"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Neue Ausgabe", "Jahresübersicht", "Budget", "Sparziele"])
 
     def SaveClear():
         if not Input_Category == "" or None:
