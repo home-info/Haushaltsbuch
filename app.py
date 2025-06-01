@@ -400,7 +400,7 @@ def main_app():
                         if submitted:
                             st.session_state.SavingsDict[target]['einzahlungen'] = editor_einzahlungen
                             st.session_state.SavingsDict[target]['auszahlungen'] = editor_auszahlungen
-                            st.rerun()
+                            # st.rerun()
 
             #
             # if st.button('Änderungen speichern', key=f"button_{termin}"):
