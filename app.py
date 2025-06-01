@@ -412,7 +412,7 @@ def main_app():
                                 st.rerun()
                         # erledigt = st.checkbox(label="Ausblenden", key=f"{target}_Status", value=st.session_state.SavingsDict[target]['status'])
                         # if erledigt == True:
-                    if st.button("Ausblenden", type='tertiary'):
+                    if st.button("Ausblenden", type='tertiary', key=f'{target}_SetStatus'):
                         st.session_state.SavingsDict[target]['status'] = True
                         with open('src/savings/SavingTargets.pkl', 'wb') as f:
                             new_data = st.session_state.SavingsDict
