@@ -419,10 +419,12 @@ def main_app():
                 with SpaZi_Input_Col2:
                     zielSumme_input = st.number_input(label="Sparziel (€)", format="%.2f")
 
-                if termin_input in st.session_state.SavingsDict:
-                    st.error("Anderen Termin eingeben!")
-                else:
-                    if st.form_submit_button("Hinzufügen"):
+                if st.form_submit_button("Hinzufügen"):
+                    if termin_input in st.session_state.SavingsDict:
+                        st.error("Anderen Termin eingeben!")
+                    elif termin_input == "" or name_input == "" or zielSumme_input == 0:
+                        st.error("Bitte alle Felder ausfüllen!")
+                    else:
                         st.session_state.SavingsDict[termin_input] = {
                             'status': False,
                             'name': str(name_input),
