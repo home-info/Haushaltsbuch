@@ -364,6 +364,15 @@ def main_app():
                 with st.expander(label=f":{num2words(Target_Index)}:&nbsp;&nbsp;&nbsp;**{st.session_state.SavingsDict[target]['name']}**"):
                     st.html(f"<div style='margin-bottom: 0px; display: flex; justify-content: space-between;'><span><h1>{st.session_state.SavingsDict[target]['name']}</h1></span><span style='text-align: right'><h1>{Target_PayIn_Sum:,.2f}&nbsp;€ von {st.session_state.SavingsDict[target]['ziel_summe']:,.2f}&nbsp;€</h1></span></div>")
 
+                    progress = Target_PayIn_Sum / st.session_state.SavingsDict[target]['ziel_summe']
+                    st.html(f"<div style='margin-bottom: -25px; display: flex; justify-content: space-between;'><span>Sparziel zu {progress * 100:.0f}&nbsp;%&nbsp;erreicht</span><span style='text-align: right'>Noch {st.session_state.SavingsDict[target]['ziel_summe'] - Target_PayIn_Sum:,.2f}&nbsp;€</span></div>")
+                    if progress > 1:
+                        st.progress(100)
+                    elif progress < 0:
+                        st.progress(0)
+                    else:
+                        st.progress(progress)
+
             # editor = st.data_editor(
             #     st.session_state.SavingsDict[termin]['einzahlungen'],
             #     hide_index=True,
