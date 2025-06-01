@@ -325,10 +325,7 @@ def main_app():
                     colors = [start_color, end_color]
                     n_bins = len(MonthlyExpenses_Category)
                     cmap = mcolors.LinearSegmentedColormap.from_list("custom", colors, N=n_bins)
-                    try:
-                        bar_colors = [cmap(i / (n_bins - 1)) for i in range(n_bins)]
-                    except:
-                        bar_colors = [cmap(i / (n_bins)) for i in range(n_bins)]
+                    bar_colors = [cmap(i / (n_bins - 1)) for i in range(n_bins)]
                     fig, ax = plt.subplots()
                     ax.bar(MonthlyExpenses_Category, MonthlyExpenses_CategorySum, color=bar_colors)
                     plt.xlabel('')
