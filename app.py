@@ -421,6 +421,7 @@ def main_app():
                             )
                         target_col3, target_col4 = st.columns(2)
                         with target_col3:
+                            st.write(st.session_state[Target_FileName]['einzahlungen'])
                             if st.button("Übernehmen", key=f"{Target_FileName}_Editor_Speichern"):
                                 # Update main session state only when saving
                                 st.session_state[Target_FileName]['einzahlungen'] = st.session_state[PayIn_EditorKey]
