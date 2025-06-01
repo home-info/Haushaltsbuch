@@ -357,6 +357,10 @@ def main_app():
                 with open(Target_FilePath, 'rb') as f:
                     st.session_state[Target_FileName] = pickle.load(f)
                 f.close()
+                st.session_state[Target_FileName]['einzahlungen'] = st.session_state[Target_FileName][
+                    'einzahlungen'].astype({"Betrag": "float64"})
+                st.session_state[Target_FileName]['auszahlungen'] = st.session_state[Target_FileName][
+                    'auszahlungen'].astype({"Betrag": "float64"})
 
                 if st.session_state[Target_FileName]['status'] == False:
                     Target_Index += 1
@@ -385,48 +389,50 @@ def main_app():
                         target_col1, target_col2 = st.columns(2)
                         with target_col1:
                             st.html(
-                                f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayIn_Sum:,.2f}&nbsp;€</h3></span></div>")
+                                f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayIn_Sum:,.2f} €</h3></span></div>")
 
-                            PayIn_EditorKey = f"{st.session_state[Target_FileName]['termin']}_PayIn"
-                            st.session_state[PayIn_EditorKey] = st.session_state[Target_FileName]['einzahlungen']
+                            PayIn_EditorKey = f"{st.session_state[Target_FileName]['termin']}_PayIn_Temp"
+                            # Initialize temporary session state for edits
+                            if PayIn_EditorKey not in st.session_state:
+                                st.session_state[PayIn_EditorKey] = st.session_state[Target_FileName][
+                                    'einzahlungen'].copy()
 
                             editor_Target_PayIn = st.data_editor(
                                 st.session_state[PayIn_EditorKey],
                                 hide_index=True,
                                 num_rows="dynamic",
-                                column_config={"Betrag": st.column_config.NumberColumn(format="euro", step=0.01)},
+                                column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
                                 key=f"EditorKey_{PayIn_EditorKey}",
                                 use_container_width=True
                             )
-                            st.session_state[Target_FileName]['einzahlungen'] = editor_Target_PayIn
 
                         with target_col2:
                             st.html(
-                                f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Auszahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayOut_Sum:,.2f}&nbsp;€</h3></span></div>")
+                                f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Auszahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayOut_Sum:,.2f} €</h3></span></div>")
 
-                            PayOut_EditorKey = f"{st.session_state[Target_FileName]['termin']}_PayOut"
-                            st.session_state[PayOut_EditorKey] = st.session_state[Target_FileName]['auszahlungen']
+                            PayOut_EditorKey = f"{st.session_state[Target_FileName]['termin']}_PayOut_Temp"
+                            if PayOut_EditorKey not in st.session_state:
+                                st.session_state[PayOut_EditorKey] = st.session_state[Target_FileName][
+                                    'auszahlungen'].copy()
 
                             editor_Target_PayOut = st.data_editor(
                                 st.session_state[PayOut_EditorKey],
                                 hide_index=True,
                                 num_rows="dynamic",
-                                column_config={"Betrag": st.column_config.NumberColumn(format="euro", step=0.01)},
+                                column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
                                 key=f"EditorKey_{PayOut_EditorKey}",
                                 use_container_width=True
                             )
 
-                        target_col3, target_spacer, target_col4 = st.columns([5, 4, 2])
                         with target_col3:
                             if st.button("Übernehmen", key=f"{Target_FileName}_Editor_Speichern"):
-                                st.session_state[Target_FileName]['einzahlungen'] = editor_Target_PayIn
-                                st.session_state[Target_FileName]['auszahlungen'] = editor_Target_PayOut
+                                # Update main session state only when saving
+                                st.session_state[Target_FileName]['einzahlungen'] = st.session_state[PayIn_EditorKey]
+                                st.session_state[Target_FileName]['auszahlungen'] = st.session_state[PayOut_EditorKey]
                                 with open(Target_FilePath, 'wb') as f:
                                     pickle.dump(st.session_state[Target_FileName], f)
-                                f.close()
                                 with open(Target_FilePath, "rb") as local_file:
                                     new_file = local_file.read()
-                                local_file.close()
                                 contents = repo.get_contents(Target_FilePath)
                                 repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
                                 st.rerun()
@@ -460,15 +466,15 @@ def main_app():
                     "name": str(name_input),
                     "termin": str(termin_input),
                     "ziel_summe": float(zielSumme_input),
-                    "einzahlungen": {
+                    "einzahlungen": pd.DataFrame({
                         "Datum": ["leer"],
                         "Vermerk": ["leer"],
-                        "Betrag": [0]
-                    },
-                    "auszahlungen": {
+                        "Betrag": [0.0]  # Use float instead of integer
+                    }).astype({"Betrag": "float64"}),
+                    "auszahlungen": pd.DataFrame({
                         "Datum": ["leer"],
-                        "Betrag": [0]
-                    }
+                        "Betrag": [0.0]  # Use float instead of integer
+                    }).astype({"Betrag": "float64"})
                 }
 
                 if not os.path.exists(f"src/savings/target_{new_dict['termin']}.pkl"):
