@@ -8,6 +8,8 @@ import matplotlib.ticker as ticker
 import seaborn as sns
 import numpy as np
 import os, shutil
+import pickle
+from num2words import num2words
 from passlib.hash import bcrypt
 import re
 from github import Github
@@ -90,7 +92,7 @@ def main_app():
         CategoryList = sorted([str(line.strip()) for line in f])
     f.close()
 
-    tab1, tab2, tab3 = st.tabs(["Neue Ausgabe", "Jahresübersicht", "Budget"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Neue Ausgabe", "Jahresübersicht", "Budget", "Sparziele"])
 
     def SaveClear():
         if not Input_Category == "" or None:
@@ -245,11 +247,15 @@ def main_app():
                 Overhead_Data = Overhead_Data.sort_values('Betrag', ascending=False)
                 Overhead_Sum = Overhead_Data['Betrag'].sum()
 
-                Expenses_Sum = pivot.loc[LoopingMonth]['SUMME']
-                Expenses_Data = sorted(
-                    [(Expenses_Category, pivot.loc[LoopingMonth][Expenses_Category]) for Expenses_Category in
-                     pivot.columns[:-1] if pivot.loc[LoopingMonth][Expenses_Category] != 0], key=lambda x: x[1],
-                    reverse=True)
+                try:
+                    Expenses_Sum = pivot.loc[LoopingMonth]['SUMME']
+                    Expenses_Data = sorted(
+                        [(Expenses_Category, pivot.loc[LoopingMonth][Expenses_Category]) for Expenses_Category in
+                         pivot.columns[:-1] if pivot.loc[LoopingMonth][Expenses_Category] != 0], key=lambda x: x[1],
+                        reverse=True)
+                except:
+                    Expenses_Sum = 0
+                    Expenses_Data = [("", 0)]
 
                 Revenue_Data = pd.read_csv(f'src/revenues/{LoopingMonth}', header=None, names=['Quelle', 'Betrag'])
                 Revenue_Data = Revenue_Data.sort_values('Betrag', ascending=False)
@@ -291,48 +297,187 @@ def main_app():
                     monthly_data = pd.DataFrame(monthly_data)
 
                     if balance_sheet[month]['Balance'] >= 0:
-                        st.html(
-                            f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='color: black !important; background-color: #ebf2fb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Balance']:,.2f} €</b></span></div>")
+                        st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='color: black !important; background-color: #b2ebb8; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Balance']:,.2f} €</b></span></div>")
                         used_budget = (1 - (balance_sheet[month]['Balance'] / balance_sheet[month]['Budget']))
                         st.progress(used_budget, text=f'{used_budget * 100:.0f} % vom Budget sind bereits ausgegeben.')
                     else:
-                        st.html(
-                            f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='color: black !important; background-color: #f2f2f4; border-radius: 5px; padding: 2px 5px;'><b>0.00 €</b></span></div>")
+                        st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Noch verfügbares Budget:</b></span> <span style='color: black !important; background-color: #f2f2f4; border-radius: 5px; padding: 2px 5px;'><b>0.00 €</b></span></div>")  # f2f2f4
                         st.progress(100, text=f'Budget vollständig ausgegeben oder überzogen.')
                     st.write(" ")
                     st.dataframe(monthly_data, hide_index=True,
                                  column_config={"Betrag": st.column_config.NumberColumn(format="euro")})
 
                 with subcol2:
-                    st.html(
-                        f"<div style='display: flex; justify-content: space-between;'><span><b>Einnahmen:</b></span> <span style='color: black !important; background-color: #eef9ef; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Revenue']:,.2f} €</b></span></div>")
+                    st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Einnahmen:</b></span> <span style='color: black !important; background-color: #b2ebb8; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Revenue']:,.2f} €</b></span></div>")  # eef9ef
                     st.dataframe(balance_sheet[month]['Revenue_Data'], hide_index=True,
                                  column_config={"Betrag": st.column_config.NumberColumn(format="euro")})
 
                 with subcol3:
-                    st.html(
-                        f"<div style='display: flex; justify-content: space-between;'><span><b>Fixkosten:</b></span> <span style='color: black !important; background-color: #fdeceb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Overhead']:,.2f} €</b></span></div>")
+                    st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Fixkosten:</b></span> <span style='color: black !important; background-color: #fac1be; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Overhead']:,.2f} €</b></span></div>")  # fdeceb
                     st.dataframe(balance_sheet[month]['Overhead_Data'], hide_index=True,
                                  column_config={"Betrag": st.column_config.NumberColumn(format="euro")})
 
                 with subcol4:
-                    st.html(
-                        f"<div style='display: flex; justify-content: space-between;'><span><b>Ausgaben:</b></span> <span style='color: black !important; background-color: #fdeceb; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Expenses']:,.2f} €</b></span></div>")
-                    MonthlyExpenses_Category, MonthlyExpenses_CategorySum = zip(*balance_sheet[month]['Expenses_Data'])
-                    start_color = np.array([.86, .23, .15])
-                    end_color = np.array([.94, .74, .25])
-                    colors = [start_color, end_color]
-                    n_bins = len(MonthlyExpenses_Category)
-                    cmap = mcolors.LinearSegmentedColormap.from_list("custom", colors, N=n_bins)
-                    bar_colors = [cmap(i / (n_bins - 1)) for i in range(n_bins)]
-                    fig, ax = plt.subplots()
-                    ax.bar(MonthlyExpenses_Category, MonthlyExpenses_CategorySum, color=bar_colors)
-                    plt.xlabel('')
-                    plt.xticks(rotation=-45, ha='left', rotation_mode='anchor')
-                    plt.title(f"Ausgaben im {Month_Verbal}")
-                    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x:,.0f} €'))
-                    st.pyplot(fig, use_container_width=True, clear_figure=True)
+                    st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Ausgaben:</b></span> <span style='color: black !important; background-color: #fac1be; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Expenses']:,.2f} €</b></span></div>")  # fdeceb
+                    try:
+                        MonthlyExpenses_Category, MonthlyExpenses_CategorySum = zip(*balance_sheet[month]['Expenses_Data'])
+                        start_color = np.array([.86, .23, .15])
+                        end_color = np.array([.94, .74, .25])
+                        colors = [start_color, end_color]
+                        n_bins = len(MonthlyExpenses_Category)
+                        cmap = mcolors.LinearSegmentedColormap.from_list("custom", colors, N=n_bins)
+                        bar_colors = [cmap(i / (n_bins - 1)) for i in range(n_bins)]
+                        fig, ax = plt.subplots()
+                        ax.bar(MonthlyExpenses_Category, MonthlyExpenses_CategorySum, color=bar_colors)
+                        plt.xlabel('')
+                        plt.xticks(rotation=-45, ha='left', rotation_mode='anchor')
+                        plt.title(f"Ausgaben im {Month_Verbal}")
+                        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x:,.0f} €'))
+                        st.pyplot(fig, use_container_width=True, clear_figure=True)
+                    except:
+                        pass
 
+    with tab4:
+        st.title("Sparziele")
+
+        if not 'KontostandIst' in st.session_state:
+            with open("src/savings/kontostand", "r") as f:
+                st.session_state.KontostandIst = float(f.read())
+            f.close()
+
+        kontostand_container = st.container(border=True)
+
+        Target_Index = 0
+        Kontostand_Soll = 0
+
+        if not 'SavingsDict' in st.session_state:
+            with open('src/savings/SavingTargets.pkl', 'rb') as f:
+                st.session_state.SavingsDict = pickle.load(f)
+            f.close()
+
+        for target in sorted(st.session_state.SavingsDict):
+            if st.session_state.SavingsDict[target]['status'] == False:
+                Target_Index += 1
+                Kontostand_Soll += st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum()
+                Kontostand_Soll -= st.session_state.SavingsDict[target]['auszahlungen']['Betrag'].sum()
+
+                with st.expander(label=f":{num2words(Target_Index)}:&nbsp;&nbsp;&nbsp;**{st.session_state.SavingsDict[target]['name']}**"):
+                    st.html(f"<div style='margin-bottom: 0px; display: flex; justify-content: space-between;'><span><h1>{st.session_state.SavingsDict[target]['name']}</h1></span><span style='text-align: right'><h1>{st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f}&nbsp;€ von {st.session_state.SavingsDict[target]['ziel_summe']:,.2f}&nbsp;€</h1></span></div>")
+
+                    progress = st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum() / st.session_state.SavingsDict[target]['ziel_summe']
+                    st.html(f"<div style='margin-bottom: -25px; display: flex; justify-content: space-between;'><span>Sparziel zu {progress * 100:.0f}&nbsp;%&nbsp;erreicht</span><span style='text-align: right'>Noch {st.session_state.SavingsDict[target]['ziel_summe'] - st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f}&nbsp;€</span></div>")
+                    if progress > 1:
+                        st.progress(100)
+                    elif progress < 0:
+                        st.progress(0)
+                    else:
+                        st.progress(progress)
+
+                    with st.form(f"form_einzahlung_{target}", border=False):
+                        target_col1, target_col2 = st.columns(2)
+                        with target_col1:
+                            st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f} €</h3></span></div>")
+                            editor_einzahlungen = st.data_editor(
+                                    st.session_state.SavingsDict[target]['einzahlungen'].reset_index(drop=True),
+                                    hide_index=True,
+                                    num_rows="dynamic",
+                                    column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
+                                    key=f"editor_einzahlung_{target}",
+                                    use_container_width=True
+                                )
+                        with target_col2:
+                            st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Auszahlungen:</h3></span><span style='text-align: right'><h3>{st.session_state.SavingsDict[target]['auszahlungen']['Betrag'].sum():,.2f} €</h3></span></div>")
+                            editor_auszahlungen = st.data_editor(
+                                st.session_state.SavingsDict[target]['auszahlungen'].reset_index(drop=True),
+                                hide_index=True,
+                                num_rows="dynamic",
+                                column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
+                                key=f"editor_auszahlung_{target}",
+                                use_container_width=True
+                            )
+                        submitted = st.form_submit_button("Speichern")
+                        if submitted:
+                            st.session_state.SavingsDict[target]['einzahlungen'] = editor_einzahlungen
+                            st.session_state.SavingsDict[target]['auszahlungen'] = editor_auszahlungen
+                            with open('src/savings/SavingTargets.pkl', 'wb') as f:
+                                new_data = st.session_state.SavingsDict
+                                pickle.dump(new_data, f)
+                            f.close()
+                            with open('src/savings/SavingTargets.pkl', 'rb') as local_file:
+                                new_file = local_file.read()
+                            local_file.close()
+                            contents = repo.get_contents('src/savings/SavingTargets.pkl')
+                            repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
+                            st.rerun()
+                    target_col3, target_col4 = st.columns([11,2])
+                    with target_col4:
+                        if st.button("️Entfernen", type='tertiary', key=f'{target}_SetStatus', icon=":material/delete:"):
+                            st.session_state.SavingsDict[target]['status'] = True
+                            with open('src/savings/SavingTargets.pkl', 'wb') as f:
+                                new_data = st.session_state.SavingsDict
+                                pickle.dump(new_data, f)
+                            f.close()
+                            with open('src/savings/SavingTargets.pkl', 'rb') as local_file:
+                                new_file = local_file.read()
+                            local_file.close()
+                            contents = repo.get_contents('src/savings/SavingTargets.pkl')
+                            repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
+                            st.rerun()
+
+        with st.expander(label='*️⃣&nbsp;&nbsp;&nbsp;**Neues Sparziel**'):
+            with st.form("Neues Sparziel", border=False):
+                name_input = st.text_input(label="Name")
+                SpaZi_Input_Col1, SpaZi_Input_Col2 = st.columns(2)
+                with SpaZi_Input_Col1:
+                    termin_input = st.text_input(label="Termin (YYYY-MM-DD)")
+                with SpaZi_Input_Col2:
+                    zielSumme_input = st.number_input(label="Sparziel (€)", format="%.2f")
+
+                if st.form_submit_button("Hinzufügen"):
+                    if termin_input in st.session_state.SavingsDict:
+                        st.error("Anderen Termin eingeben!")
+                    elif termin_input == "" or name_input == "" or zielSumme_input == 0:
+                        st.error("Bitte alle Felder ausfüllen!")
+                    else:
+                        st.session_state.SavingsDict[termin_input] = {
+                            'status': False,
+                            'name': str(name_input),
+                            'ziel_summe': float(zielSumme_input),
+                            'einzahlungen': pd.DataFrame([], columns=['Datum', 'Vermerk', 'Betrag']),
+                            'auszahlungen': pd.DataFrame([], columns=['Datum', 'Betrag'])
+                        }
+                        st.rerun()
+
+        with kontostand_container:
+            st.subheader("Kontostand")
+            with st.form("kontostand", border=False):
+                kontostand_container_col1, kontostand_container_col2 = st.columns([5, 1])
+                with kontostand_container_col1:
+                    st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>Aktueller Kontostand:</b></span></div>")
+                    KontostandIst_Input = st.number_input(label="Aktueller Kontostand (€)", format="%.2f", value=st.session_state.KontostandIst, label_visibility='collapsed')
+                with kontostand_container_col2:
+                    st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>&nbsp;</b></span></div>")
+                    if st.form_submit_button("Speichern"):
+                        st.session_state.KontostandIst = KontostandIst_Input
+                        with open('src/savings/kontostand', 'w') as f:
+                            f.write(str(st.session_state.KontostandIst))
+                        f.close()
+                        with open('src/savings/kontostand', "rb") as local_file:
+                            new_file = local_file.read()
+                        local_file.close()
+                        contents = repo.get_contents('src/savings/kontostand')
+                        repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
+                        st.rerun()
+
+            with kontostand_container_col1:
+                st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>Kontostand Soll:</b></span> <span><b>{Kontostand_Soll:,.2f}&nbsp;€</b></span></div>")  # f2f2f4
+
+                if st.session_state.KontostandIst - Kontostand_Soll == 0:
+                    st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Differenz:</b></span> <span style='color: black !important; background-color: #f2f2f4; border-radius: 5px; padding: 2px 5px;'><b>± 0.00&nbsp;€</b></span></div>")  # f2f2f4
+                if st.session_state.KontostandIst - Kontostand_Soll > 0:
+                    st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Differenz:</b></span> <span style='color: black !important; background-color: #b2ebb8; border-radius: 5px; padding: 2px 5px;'><b>+ {st.session_state.KontostandIst - Kontostand_Soll:,.2f}&nbsp;€</b></span></div>")
+                if st.session_state.KontostandIst - Kontostand_Soll < 0:
+                    st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Differenz:</b></span> <span style='color: black !important; background-color: #fac1be; border-radius: 5px; padding: 2px 5px;'><b>– {st.session_state.KontostandIst - Kontostand_Soll * -1:,.2f}&nbsp;€</b></span></div>")
 
 # Display login page or main app based on authentication status
 if not st.session_state["authenticated"]:
