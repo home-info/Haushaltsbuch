@@ -345,6 +345,15 @@ def main_app():
         f.close()
 
         for termin in sorted(st.session_state.SavingsDict):
+            editor = st.data_editor(
+                st.session_state.SavingsDict[termin]['einzahlungen'],
+                hide_index=True,
+                num_rows="dynamic",
+                column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
+                key=f"editor_einzahlung_{termin}",
+                use_container_width=True
+            )
+            
             st.write(st.session_state.SavingsDict[termin]['einzahlungen'])
 
 
