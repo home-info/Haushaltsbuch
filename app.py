@@ -356,6 +356,11 @@ def main_app():
 
             st.session_state.SavingsDict[termin]['einzahlungen'] = editor
             st.write(st.session_state.SavingsDict[termin]['einzahlungen'])
+            st.write(st.session_state.SavingsDict)
+
+            # if st.button('Speichern'):
+            #     with
+
             st.divider()
 
 
