@@ -410,7 +410,7 @@ def main_app():
                             st.rerun()
                     target_col3, target_col4 = st.columns([9,2])
                     with target_col4:
-                        if st.button("Ausblenden", type='tertiary', key=f'{target}_SetStatus'):
+                        if st.button("Sparziel ausblenden", type='tertiary', key=f'{target}_SetStatus'):
                             st.session_state.SavingsDict[target]['status'] = True
                             with open('src/savings/SavingTargets.pkl', 'wb') as f:
                                 new_data = st.session_state.SavingsDict
