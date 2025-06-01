@@ -394,24 +394,21 @@ def main_app():
                                 key=f"editor_auszahlung_{target}",
                                 use_container_width=True
                             )
-                        target_col3, target_col4 = st.columns([9,2])
-                        with target_col3:
-                            submitted = st.form_submit_button("Speichern")
-                            if submitted:
-                                st.session_state.SavingsDict[target]['einzahlungen'] = editor_einzahlungen
-                                st.session_state.SavingsDict[target]['auszahlungen'] = editor_auszahlungen
-                                with open('src/savings/SavingTargets.pkl', 'wb') as f:
-                                    new_data = st.session_state.SavingsDict
-                                    pickle.dump(new_data, f)
-                                f.close()
-                                with open('src/savings/SavingTargets.pkl', 'rb') as local_file:
-                                    new_file = local_file.read()
-                                local_file.close()
-                                contents = repo.get_contents('src/savings/SavingTargets.pkl')
-                                repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
-                                st.rerun()
-                        # erledigt = st.checkbox(label="Ausblenden", key=f"{target}_Status", value=st.session_state.SavingsDict[target]['status'])
-                        # if erledigt == True:
+                        submitted = st.form_submit_button("Speichern")
+                        if submitted:
+                            st.session_state.SavingsDict[target]['einzahlungen'] = editor_einzahlungen
+                            st.session_state.SavingsDict[target]['auszahlungen'] = editor_auszahlungen
+                            with open('src/savings/SavingTargets.pkl', 'wb') as f:
+                                new_data = st.session_state.SavingsDict
+                                pickle.dump(new_data, f)
+                            f.close()
+                            with open('src/savings/SavingTargets.pkl', 'rb') as local_file:
+                                new_file = local_file.read()
+                            local_file.close()
+                            contents = repo.get_contents('src/savings/SavingTargets.pkl')
+                            repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
+                            st.rerun()
+                    target_col3, target_col4 = st.columns([9,2])
                     with target_col4:
                         if st.button("Ausblenden", type='tertiary', key=f'{target}_SetStatus'):
                             st.session_state.SavingsDict[target]['status'] = True
