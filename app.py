@@ -412,7 +412,7 @@ def main_app():
                             st.rerun()
 
         with st.expander(label='*️⃣&nbsp;&nbsp;&nbsp;**Neues Sparziel**'):
-            with st.form("Neues Sparziel", border=False)
+            with st.form("Neues Sparziel", border=False):
                 name_input = st.text_input(label="Name")
                 SpaZi_Input_Col1, SpaZi_Input_Col2 = st.columns(2)
                 with SpaZi_Input_Col1:
