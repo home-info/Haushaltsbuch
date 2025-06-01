@@ -95,11 +95,11 @@ def main_app():
     tab1, tab2, tab3, tab4 = st.tabs(["Neue Ausgabe", "Jahresübersicht", "Budget", "Sparziele"])
 
     def SaveClear():
-        if not Input_Category == "" or None:
-            if not Input_Amount == 0:
+        if not st.session_state.InputCategory == "" or None:
+            if not st.session_state.InputAmount == 0:
                 with tab1_status_col:
-                    st.success(f"Gespeichert: {Input_Date} | {Input_Category} | {Input_Amount:.2f} €")
-                dataset = [str(Input_Date), str(Input_Category), float(Input_Amount)]
+                    st.success(f"Gespeichert: {st.session_state.InputDate} | {st.session_state.InputCategory} | {st.session_state.InputAmount:.2f} €")
+                dataset = [str(st.session_state.InputDate), str(st.session_state.InputCategory), float(st.session_state.InputAmount)]
                 with open("src/database.csv", "a", newline='') as db:
                     writer = csv.writer(db)
                     writer.writerow(dataset)
@@ -130,17 +130,15 @@ def main_app():
             tab1_status_col = st.container()
             with tab1_col1:
                 st.session_state.setdefault("DATUM_KEY", f"{TODAY}")
-                if not 'InputDate' in st.session_state:
-                    st.session_state.InputDate = st.text_input("Datum", key="DATUM_KEY")
+                st.session_state.InputDate = st.text_input("Datum", key="DATUM_KEY")
 
             with tab1_col2:
                 st.session_state.setdefault("CATEGORY_KEY", "")
-                Input_Category = st.selectbox("Kategorie", CategoryList, key="CATEGORY_KEY")
+                st.session_state.InputCategory = st.selectbox("Kategorie", CategoryList, key="CATEGORY_KEY")
 
             with tab1_col3:
                 st.session_state.setdefault("AMOUNT_KEY", 0.00)
-                Input_Amount = st.number_input(label="Betrag (€)", min_value=0.00, step=0.01, format="%.2f",
-                                               key="AMOUNT_KEY")
+                st.session_state.InputAmount = st.number_input(label="Betrag (€)", min_value=0.00, step=0.01, format="%.2f", key="AMOUNT_KEY")
 
             st.form_submit_button("Speichern", on_click=SaveClear)
 
