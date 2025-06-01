@@ -450,26 +450,25 @@ def main_app():
 
         with kontostand_container:
             st.subheader("Kontostand")
-            kontostand_container_col1, kontostand_container_col2 = st.columns([5, 1])
-            with kontostand_container_col1:
-                st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>Aktueller Kontostand:</b></span></div>")
-                KontostandIst_Input = st.number_input(label="Aktueller Kontostand (€)", format="%.2f", value=st.session_state.KontostandIst, label_visibility='collapsed')
-                st.session_state.KontostandIst = KontostandIst_Input
-            # with kontostand_container_col2:
-            #     st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>&nbsp;</b></span></div>")
-            #     if st.button("Speichern", key="kontostand-speichern"):
-            #         st.session_state.KontostandIst = KontostandIst_Input
-            #         with open('src/savings/kontostand', 'w') as f:
-            #             f.write(str(st.session_state.KontostandIst))
-            #         f.close()
-        #             with open('src/savings/kontostand', "rb") as local_file:
-        #                 new_file = local_file.read()
-        #             local_file.close()
-        #             contents = repo.get_contents('src/savings/kontostand')
-        #             repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
-        #             st.rerun()
-        #
-            st.write(st.session_state.KontostandIst - Kontostand_Soll)
+            with st.form("kontostand", border=False):
+                kontostand_container_col1, kontostand_container_col2 = st.columns([5, 1])
+                with kontostand_container_col1:
+                    st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>Aktueller Kontostand:</b></span></div>")
+                    KontostandIst_Input = st.number_input(label="Aktueller Kontostand (€)", format="%.2f", value=st.session_state.KontostandIst, label_visibility='collapsed')
+                    st.session_state.KontostandIst = KontostandIst_Input
+                with kontostand_container_col2:
+                    st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>&nbsp;</b></span></div>")
+                    if st.form_submit_button("Speichern", key="kontostand-speichern"):
+                        # st.session_state.KontostandIst = KontostandIst_Input
+                        with open('src/savings/kontostand', 'w') as f:
+                            f.write(str(st.session_state.KontostandIst))
+                        f.close()
+                        with open('src/savings/kontostand', "rb") as local_file:
+                            new_file = local_file.read()
+                        local_file.close()
+                        contents = repo.get_contents('src/savings/kontostand')
+                        repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
+                        st.rerun()
 
             with kontostand_container_col1:
                 if st.session_state.KontostandIst - Kontostand_Soll == 0:
