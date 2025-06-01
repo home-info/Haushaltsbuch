@@ -372,7 +372,6 @@ def main_app():
                     else:
                         st.progress(progress)
 
-                    st.write(st.session_state.SavingsDict)
                     with st.form(f"form_einzahlung_{target}", border=False):
                         target_col1, target_col2 = st.columns(2)
                         with target_col1:
