@@ -377,17 +377,16 @@ def main_app():
                     with target_col1:
                         st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayIn_Sum:,.2f} €</h3></span></div>")
 
-        # editor = st.data_editor(
-            #     st.session_state.SavingsDict[termin]['einzahlungen'],
-            #     hide_index=True,
-            #     num_rows="dynamic",
-            #     column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
-            #     key=f"editor_einzahlung_{termin}",
-            #     use_container_width=True
-            # )
-            #
-            # st.session_state.SavingsDict[termin]['einzahlungen'] = editor
-            # st.write(st.session_state.SavingsDict[termin]['einzahlungen'])
+                        editor = st.data_editor(
+                                st.session_state.SavingsDict[target]['einzahlungen'],
+                                hide_index=True,
+                                num_rows="dynamic",
+                                column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
+                                key=f"editor_einzahlung_{target}",
+                                use_container_width=True
+                            )
+                        st.session_state.SavingsDict[target]['einzahlungen'] = editor
+                        st.write(st.session_state.SavingsDict[target]['einzahlungen'])
             #
             # if st.button('Änderungen speichern', key=f"button_{termin}"):
             #     with open('src/savings/SavingTargets.pkl', 'wb') as f:
