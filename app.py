@@ -340,9 +340,10 @@ def main_app():
     with tab4:
         st.title("Sparziele")
 
-        with open("src/savings/kontostand", "r") as f:
-            Kontostand_Ist = float(f.read())
-        f.close()
+        if not 'KontostandIst' in st.session_state:
+            with open("src/savings/kontostand", "r") as f:
+                st.session_state.KontostandIst = float(f.read())
+            f.close()
 
         kontostand_container = st.container(border=True)
 
@@ -446,22 +447,13 @@ def main_app():
                             'auszahlungen': pd.DataFrame([], columns=['Datum', 'Betrag'])
                         }
                         st.rerun()
-        st.write(st.session_state.SavingsDict)
 
-
-
-
-
-
-
-        # with kontostand_container:
-        #     st.subheader("Kontostand")
-        #     kontostand_container_col1, kontostand_container_col2 = st.columns([5, 1])
-        #     with kontostand_container_col1:
-        #         st.html(
-        #             f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>Aktueller Kontostand:</b></span></div>")
-        #         Kontostand_Ist_Input = st.number_input(label="Aktueller Kontostand (€)", format="%.2f",
-        #                                                value=Kontostand_Ist, label_visibility='collapsed')
+        with kontostand_container:
+            st.subheader("Kontostand")
+            kontostand_container_col1, kontostand_container_col2 = st.columns([5, 1])
+            with kontostand_container_col1:
+                st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>Aktueller Kontostand:</b></span></div>")
+                KontostandIst_Input = st.number_input(label="Aktueller Kontostand (€)", format="%,.2f", value=st.session_state.KontostandIst, label_visibility='collapsed')
         #     with kontostand_container_col2:
         #         st.html(
         #             f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>&nbsp;</b></span></div>")
