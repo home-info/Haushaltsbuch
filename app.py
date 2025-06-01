@@ -247,11 +247,15 @@ def main_app():
                 Overhead_Data = Overhead_Data.sort_values('Betrag', ascending=False)
                 Overhead_Sum = Overhead_Data['Betrag'].sum()
 
-                Expenses_Sum = pivot.loc[LoopingMonth]['SUMME']
-                Expenses_Data = sorted(
-                    [(Expenses_Category, pivot.loc[LoopingMonth][Expenses_Category]) for Expenses_Category in
-                     pivot.columns[:-1] if pivot.loc[LoopingMonth][Expenses_Category] != 0], key=lambda x: x[1],
-                    reverse=True)
+                try:
+                    Expenses_Sum = pivot.loc[LoopingMonth]['SUMME']
+                    Expenses_Data = sorted(
+                        [(Expenses_Category, pivot.loc[LoopingMonth][Expenses_Category]) for Expenses_Category in
+                         pivot.columns[:-1] if pivot.loc[LoopingMonth][Expenses_Category] != 0], key=lambda x: x[1],
+                        reverse=True)
+                except:
+                    Expenses_Sum = 0
+                    Expenses_Data = [("", 0)]
 
                 Revenue_Data = pd.read_csv(f'src/revenues/{LoopingMonth}', header=None, names=['Quelle', 'Betrag'])
                 Revenue_Data = Revenue_Data.sort_values('Betrag', ascending=False)
