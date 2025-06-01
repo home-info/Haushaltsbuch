@@ -356,7 +356,7 @@ def main_app():
         for target in sorted(st.session_state.SavingsDict):
             if st.session_state.SavingsDict[target]['status'] == False:
                 Target_Index += 1
-                st.write(st.session_state.SavingsDict[target]['einzahlungen'])
+                st.write(st.session_state.SavingsDict[target]['einzahlungen'].sum())
 
 
 
