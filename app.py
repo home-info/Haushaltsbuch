@@ -358,8 +358,7 @@ def main_app():
             if st.session_state.SavingsDict[target]['status'] == False:
                 Target_Index += 1
                 Kontostand_Soll += st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum()
-                Target_PayOut_Sum = st.session_state.SavingsDict[target]['auszahlungen']['Betrag'].sum()
-                Kontostand_Soll -= Target_PayOut_Sum
+                Kontostand_Soll -= st.session_state.SavingsDict[target]['auszahlungen']['Betrag'].sum()
 
                 with st.expander(label=f":{num2words(Target_Index)}:&nbsp;&nbsp;&nbsp;**{st.session_state.SavingsDict[target]['name']}**"):
                     st.html(f"<div style='margin-bottom: 0px; display: flex; justify-content: space-between;'><span><h1>{st.session_state.SavingsDict[target]['name']}</h1></span><span style='text-align: right'><h1>{st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f}&nbsp;€ von {st.session_state.SavingsDict[target]['ziel_summe']:,.2f}&nbsp;€</h1></span></div>")
@@ -387,7 +386,7 @@ def main_app():
                                     use_container_width=True
                                 )
                         with target_col2:
-                            st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Auszahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayOut_Sum:,.2f} €</h3></span></div>")
+                            st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Auszahlungen:</h3></span><span style='text-align: right'><h3>{st.session_state.SavingsDict[target]['auszahlungen']['Betrag'].sum():,.2f} €</h3></span></div>")
                             editor_auszahlungen = st.data_editor(
                                 st.session_state.SavingsDict[target]['auszahlungen'],
                                 hide_index=True,
