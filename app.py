@@ -411,23 +411,23 @@ def main_app():
                             repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
                             st.rerun()
 
-                with st.expander(label='*️⃣&nbsp;&nbsp;&nbsp;**Neues Sparziel**'):
-                    name_input = st.text_input(label="Name")
-                    SpaZi_Input_Col1, SpaZi_Input_Col2 = st.columns(2)
-                    with SpaZi_Input_Col1:
-                        termin_input = st.text_input(label="Termin (YYYY-MM-DD)")
-                    with SpaZi_Input_Col2:
-                        zielSumme_input = st.number_input(label="Sparziel (€)", format="%.2f")
+            with st.expander(label='*️⃣&nbsp;&nbsp;&nbsp;**Neues Sparziel**'):
+                name_input = st.text_input(label="Name")
+                SpaZi_Input_Col1, SpaZi_Input_Col2 = st.columns(2)
+                with SpaZi_Input_Col1:
+                    termin_input = st.text_input(label="Termin (YYYY-MM-DD)")
+                with SpaZi_Input_Col2:
+                    zielSumme_input = st.number_input(label="Sparziel (€)", format="%.2f")
 
-                    if st.button("Hinzufügen"):
-                        st.session_state.SavingsDict[termin_input] = {
-                            'status': False,
-                            'name': str(name_input),
-                            'ziel_summe': float(zielSumme_input),
-                            'einzahlungen': pd.DataFrame([], columns=['Datum', 'Vermerk', 'Betrag']),
-                            'auszahlungen': pd.DataFrame([], columns=['Datum', 'Betrag'])
-                        }
-                        st.rerun()
+                if st.button("Hinzufügen"):
+                    st.session_state.SavingsDict[termin_input] = {
+                        'status': False,
+                        'name': str(name_input),
+                        'ziel_summe': float(zielSumme_input),
+                        'einzahlungen': pd.DataFrame([], columns=['Datum', 'Vermerk', 'Betrag']),
+                        'auszahlungen': pd.DataFrame([], columns=['Datum', 'Betrag'])
+                    }
+                    st.rerun()
 
 
 
