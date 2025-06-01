@@ -124,7 +124,8 @@ def main_app():
         TODAY = datetime.date.today()
         st.title("Neue Ausgabe")
 
-        with st.container(border=True):
+        # with st.container(border=True):
+        with st.form('Neue Ausgabe'):
             tab1_col1, tab1_col2, tab1_col3 = st.columns(3)
             tab1_status_col = st.container()
             with tab1_col1:
@@ -140,7 +141,7 @@ def main_app():
                 Input_Amount = st.number_input(label="Betrag (€)", min_value=0.00, step=0.01, format="%.2f",
                                                key="AMOUNT_KEY")
 
-            st.button("Speichern", on_click=SaveClear)
+            st.form_submit_button("Speichern", on_click=SaveClear)
 
             with tab1_status_col:
                 st.empty()
