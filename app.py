@@ -340,30 +340,43 @@ def main_app():
     with tab4:
         st.title("Sparziele")
 
+        with open("src/savings/kontostand", "r") as f:
+            Kontostand_Ist = float(f.read())
+        f.close()
+
+        kontostand_container = st.container(border=True)
+
+        Target_Index = 0
+        Kontostand_Soll = 0
+
         with open('src/savings/SavingTargets.pkl', 'rb') as f:
             st.session_state.SavingsDict = pickle.load(f)
         f.close()
 
-        for termin in sorted(st.session_state.SavingsDict):
-            editor = st.data_editor(
-                st.session_state.SavingsDict[termin]['einzahlungen'],
-                hide_index=True,
-                num_rows="dynamic",
-                column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
-                key=f"editor_einzahlung_{termin}",
-                use_container_width=True
-            )
+        for target in sorted(st.session_state.SavingsDict):
+            if st.session_state.SavingsDict[target]['status'] == False:
+                Target_Index += 1
+                st.write(st.session_state.SavingsDict[target]['einzahlungen'])
 
-            st.session_state.SavingsDict[termin]['einzahlungen'] = editor
-            st.write(st.session_state.SavingsDict[termin]['einzahlungen'])
 
-            if st.button('Änderungen speichern', key=f"button_{termin}"):
-                with open('src/savings/SavingTargets.pkl', 'wb') as f:
-                    new_data = st.session_state.SavingsDict
-                    pickle.dump(new_data, f)
-                f.close()
 
-            st.divider()
+            # editor = st.data_editor(
+            #     st.session_state.SavingsDict[termin]['einzahlungen'],
+            #     hide_index=True,
+            #     num_rows="dynamic",
+            #     column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
+            #     key=f"editor_einzahlung_{termin}",
+            #     use_container_width=True
+            # )
+            #
+            # st.session_state.SavingsDict[termin]['einzahlungen'] = editor
+            # st.write(st.session_state.SavingsDict[termin]['einzahlungen'])
+            #
+            # if st.button('Änderungen speichern', key=f"button_{termin}"):
+            #     with open('src/savings/SavingTargets.pkl', 'wb') as f:
+            #         new_data = st.session_state.SavingsDict
+            #         pickle.dump(new_data, f)
+            #     f.close()
 
 
 
