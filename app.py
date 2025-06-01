@@ -356,10 +356,12 @@ def main_app():
 
             st.session_state.SavingsDict[termin]['einzahlungen'] = editor
             st.write(st.session_state.SavingsDict[termin]['einzahlungen'])
-            st.write(st.session_state.SavingsDict)
 
-            # if st.button('Speichern'):
-            #     with
+            if st.button('Speichern'):
+                with open('src/savings/SavingTargets.pkl', 'wb') as f:
+                    new_data = st.session_state.SavingsDict
+                    pickle.dump(new_data, f)
+                f.close()
 
             st.divider()
 
