@@ -373,11 +373,11 @@ def main_app():
                     else:
                         st.progress(progress)
 
-                    target_col1, target_col2 = st.columns(2)
-                    with target_col1:
-                        st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayIn_Sum:,.2f} €</h3></span></div>")
 
-                        with st.form("Einzahlungen", border=False):
+                    with st.form(f"form_einzahlung_{target}", border=False):
+                        target_col1, target_col2 = st.columns(2)
+                        with target_col1:
+                            st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayIn_Sum:,.2f} €</h3></span></div>")
                             editor = st.data_editor(
                                     st.session_state.SavingsDict[target]['einzahlungen'],
                                     hide_index=True,
@@ -386,7 +386,7 @@ def main_app():
                                     key=f"editor_einzahlung_{target}",
                                     use_container_width=True
                                 )
-                            submitted = st.form_submit_button("Submit")
+                            submitted = st.form_submit_button("Speichern")
                             if submitted:
                                 st.session_state.SavingsDict[target]['einzahlungen'] = editor
                         st.write(st.session_state.SavingsDict[target]['einzahlungen'])
