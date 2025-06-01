@@ -357,7 +357,7 @@ def main_app():
             st.session_state.SavingsDict[termin]['einzahlungen'] = editor
             st.write(st.session_state.SavingsDict[termin]['einzahlungen'])
 
-            if st.button('Speichern'):
+            if st.button('Änderungen speichern'):
                 with open('src/savings/SavingTargets.pkl', 'wb') as f:
                     new_data = st.session_state.SavingsDict
                     pickle.dump(new_data, f)
