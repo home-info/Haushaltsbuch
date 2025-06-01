@@ -433,6 +433,7 @@ def main_app():
                             'auszahlungen': pd.DataFrame([], columns=['Datum', 'Betrag'])
                         }
                         st.rerun()
+        st.write(st.session_state.SavingsDict)
 
 
 
