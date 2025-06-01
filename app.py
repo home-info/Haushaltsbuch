@@ -357,16 +357,15 @@ def main_app():
         for target in sorted(st.session_state.SavingsDict):
             if st.session_state.SavingsDict[target]['status'] == False:
                 Target_Index += 1
-                Target_PayIn_Sum = st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum()
-                Kontostand_Soll += Target_PayIn_Sum
+                Kontostand_Soll += st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum()
                 Target_PayOut_Sum = st.session_state.SavingsDict[target]['auszahlungen']['Betrag'].sum()
                 Kontostand_Soll -= Target_PayOut_Sum
 
                 with st.expander(label=f":{num2words(Target_Index)}:&nbsp;&nbsp;&nbsp;**{st.session_state.SavingsDict[target]['name']}**"):
-                    st.html(f"<div style='margin-bottom: 0px; display: flex; justify-content: space-between;'><span><h1>{st.session_state.SavingsDict[target]['name']}</h1></span><span style='text-align: right'><h1>{Target_PayIn_Sum:,.2f}&nbsp;€ von {st.session_state.SavingsDict[target]['ziel_summe']:,.2f}&nbsp;€</h1></span></div>")
+                    st.html(f"<div style='margin-bottom: 0px; display: flex; justify-content: space-between;'><span><h1>{st.session_state.SavingsDict[target]['name']}</h1></span><span style='text-align: right'><h1>{st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f}&nbsp;€ von {st.session_state.SavingsDict[target]['ziel_summe']:,.2f}&nbsp;€</h1></span></div>")
 
-                    progress = Target_PayIn_Sum / st.session_state.SavingsDict[target]['ziel_summe']
-                    st.html(f"<div style='margin-bottom: -25px; display: flex; justify-content: space-between;'><span>Sparziel zu {progress * 100:.0f}&nbsp;%&nbsp;erreicht</span><span style='text-align: right'>Noch {st.session_state.SavingsDict[target]['ziel_summe'] - Target_PayIn_Sum:,.2f}&nbsp;€</span></div>")
+                    progress = st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum() / st.session_state.SavingsDict[target]['ziel_summe']
+                    st.html(f"<div style='margin-bottom: -25px; display: flex; justify-content: space-between;'><span>Sparziel zu {progress * 100:.0f}&nbsp;%&nbsp;erreicht</span><span style='text-align: right'>Noch {st.session_state.SavingsDict[target]['ziel_summe'] - st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f}&nbsp;€</span></div>")
                     if progress > 1:
                         st.progress(100)
                     elif progress < 0:
@@ -378,8 +377,8 @@ def main_app():
                     with st.form(f"form_einzahlung_{target}", border=False):
                         target_col1, target_col2 = st.columns(2)
                         with target_col1:
-                            st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayIn_Sum:,.2f} €</h3></span></div>")
-                            editor = st.data_editor(
+                            st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f} €</h3></span></div>")
+                            editor_einzahlungen = st.data_editor(
                                     st.session_state.SavingsDict[target]['einzahlungen'],
                                     hide_index=True,
                                     num_rows="dynamic",
@@ -389,8 +388,11 @@ def main_app():
                                 )
                             submitted = st.form_submit_button("Speichern")
                             if submitted:
-                                st.session_state.SavingsDict[target]['einzahlungen'] = editor
-                        st.write(st.session_state.SavingsDict[target]['einzahlungen'])
+                                st.session_state.SavingsDict[target]['einzahlungen'] = editor_einzahlungen
+                            st.write(st.session_state.SavingsDict[target]['einzahlungen'])
+                        with target_col2:
+                            st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Auszahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayOut_Sum:,.2f} €</h3></span></div>")
+
             #
             # if st.button('Änderungen speichern', key=f"button_{termin}"):
             #     with open('src/savings/SavingTargets.pkl', 'wb') as f:
