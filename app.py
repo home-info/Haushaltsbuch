@@ -356,9 +356,13 @@ def main_app():
         for target in sorted(st.session_state.SavingsDict):
             if st.session_state.SavingsDict[target]['status'] == False:
                 Target_Index += 1
-                st.write(st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum())
+                Target_PayIn_Sum = st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum()
+                Kontostand_Soll += Target_PayIn_Sum
+                Target_PayOut_Sum = st.session_state.SavingsDict[target]['auszahlungen']['Betrag'].sum()
+                Kontostand_Soll -= Target_PayOut_Sum
 
-
+                with st.expander(label=f":{num2words(Target_Index)}:&nbsp;&nbsp;&nbsp;**{st.session_state.SavingsDict[target]['name']}**"):
+                    st.html(f"<div style='margin-bottom: 0px; display: flex; justify-content: space-between;'><span><h1>{st.session_state.SavingsDict[target]['name']}</h1></span><span style='text-align: right'><h1>{Target_PayIn_Sum:,.2f}&nbsp;€ von {st.session_state.SavingsDict[target]['ziel_summe']:,.2f}&nbsp;€</h1></span></div>")
 
             # editor = st.data_editor(
             #     st.session_state.SavingsDict[termin]['einzahlungen'],

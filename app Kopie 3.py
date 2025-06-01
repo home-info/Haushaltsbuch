@@ -369,8 +369,7 @@ def main_app():
 
                     with st.expander(
                             label=f":{num2words(Target_Index)}:&nbsp;&nbsp;&nbsp;**{st.session_state[Target_FileName]['name']}**"):
-                        st.html(
-                            f"<div style='margin-bottom: 0px; display: flex; justify-content: space-between;'><span><h1>{st.session_state[Target_FileName]['name']}</h1></span><span style='text-align: right'><h1>{Target_PayIn_Sum:,.2f}&nbsp;€ von {st.session_state[Target_FileName]['ziel_summe']:,.2f}&nbsp;€</h1></span></div>")
+                        st.html(f"<div style='margin-bottom: 0px; display: flex; justify-content: space-between;'><span><h1>{st.session_state[Target_FileName]['name']}</h1></span><span style='text-align: right'><h1>{Target_PayIn_Sum:,.2f}&nbsp;€ von {st.session_state[Target_FileName]['ziel_summe']:,.2f}&nbsp;€</h1></span></div>")
 
                         progress = Target_PayIn_Sum / st.session_state[Target_FileName]['ziel_summe']
                         st.html(
