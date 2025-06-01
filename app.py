@@ -469,16 +469,15 @@ def main_app():
         #             repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
         #             st.rerun()
         #
-            Kontostand_Differenz = st.session_state.KontostandIst - Kontostand_Soll
-            st.write(Kontostand_Differenz)
+            st.write(st.session_state.KontostandIst - Kontostand_Soll)
 
             with kontostand_container_col1:
-                if Kontostand_Differenz == 0:
+                if st.session_state.KontostandIst - Kontostand_Soll == 0:
                     st.html(f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #f2f2f4; border-radius: 5px; padding: 2px 5px;'><b>± 0.00&nbsp;€</b></span></div>")  # f2f2f4
-                if Kontostand_Differenz > 0:
-                    st.html(f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #b2ebb8; border-radius: 5px; padding: 2px 5px;'><b>+ {Kontostand_Differenz:,.2f}&nbsp;€</b></span></div>")
-                if Kontostand_Differenz < 0:
-                    st.html(f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #fac1be; border-radius: 5px; padding: 2px 5px;'><b>– {Kontostand_Differenz * -1:,.2f}&nbsp;€</b></span></div>")
+                if st.session_state.KontostandIst - Kontostand_Soll > 0:
+                    st.html(f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #b2ebb8; border-radius: 5px; padding: 2px 5px;'><b>+ {st.session_state.KontostandIst - Kontostand_Soll:,.2f}&nbsp;€</b></span></div>")
+                if st.session_state.KontostandIst - Kontostand_Soll < 0:
+                    st.html(f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #fac1be; border-radius: 5px; padding: 2px 5px;'><b>– {st.session_state.KontostandIst - Kontostand_Soll * -1:,.2f}&nbsp;€</b></span></div>")
 
 # Display login page or main app based on authentication status
 if not st.session_state["authenticated"]:
