@@ -408,7 +408,7 @@ def main_app():
                             contents = repo.get_contents('src/savings/SavingTargets.pkl')
                             repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
                             st.rerun()
-                    target_col3, target_col4 = st.columns([10,2])
+                    target_col3, target_col4 = st.columns([11,2])
                     with target_col4:
                         if st.button("️Entfernen", type='tertiary', key=f'{target}_SetStatus', icon=":material/delete:"):
                             st.session_state.SavingsDict[target]['status'] = True
