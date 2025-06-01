@@ -386,13 +386,21 @@ def main_app():
                                     key=f"editor_einzahlung_{target}",
                                     use_container_width=True
                                 )
-                            submitted = st.form_submit_button("Speichern")
-                            if submitted:
-                                st.session_state.SavingsDict[target]['einzahlungen'] = editor_einzahlungen
-                                st.rerun()
-                            st.write(st.session_state.SavingsDict[target]['einzahlungen'])
                         with target_col2:
                             st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Auszahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayOut_Sum:,.2f} €</h3></span></div>")
+                            editor_auszahlungen = st.data_editor(
+                                st.session_state.SavingsDict[target]['auszahlungen'],
+                                hide_index=True,
+                                num_rows="dynamic",
+                                column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
+                                key=f"editor_auszahlung_{target}",
+                                use_container_width=True
+                            )
+                        submitted = st.form_submit_button("Speichern", key=f"button_{target}")
+                        if submitted:
+                            st.session_state.SavingsDict[target]['einzahlungen'] = editor_einzahlungen
+                            st.session_state.SavingsDict[target]['auszahlungen'] = editor_auszahlungen
+                            st.rerun()
 
             #
             # if st.button('Änderungen speichern', key=f"button_{termin}"):
