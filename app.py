@@ -362,7 +362,7 @@ def main_app():
                 Kontostand_Soll -= st.session_state.SavingsDict[target]['auszahlungen']['Betrag'].sum()
 
                 with st.expander(label=f":{num2words(Target_Index)}:&nbsp;&nbsp;&nbsp;**{st.session_state.SavingsDict[target]['name']}**"):
-                    st.html(f"<div style='margin-bottom: 0px; display: flex; justify-content: space-between;'><span><h1>{st.session_state.SavingsDict[target]['name']}</h1></span><span style='text-align: right'><h1>{st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f}&nbsp;€ von {st.session_state.SavingsDict[target]['ziel_summe']:,.2f}&nbsp;€</h1></span></div>")
+                    st.html(f"<div style='margin-bottom: 0px; display: flex; justify-content: space-between;'><span><h1>{st.session_state.SavingsDict[target]['name']}</h1></span><span style='text-align: right'><h1>{st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f}&nbsp;€ von&nbsp;{st.session_state.SavingsDict[target]['ziel_summe']:,.2f}&nbsp;€</h1></span></div>")
 
                     progress = st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum() / st.session_state.SavingsDict[target]['ziel_summe']
                     st.html(f"<div style='margin-bottom: -25px; display: flex; justify-content: space-between;'><span>Sparziel zu {progress * 100:.0f}&nbsp;%&nbsp;erreicht</span><span style='text-align: right'>Noch {st.session_state.SavingsDict[target]['ziel_summe'] - st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f}&nbsp;€</span></div>")
