@@ -385,7 +385,7 @@ def main_app():
                                     key=f"editor_einzahlung_{target}",
                                     use_container_width=True
                                 )
-                            st.write(st.session_state.SavingsDict[target]['einzahlungen'])
+                            st.write(st.session_state.SavingsDict[target])
                         with target_col2:
                             st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Auszahlungen:</h3></span><span style='text-align: right'><h3>{st.session_state.SavingsDict[target]['auszahlungen']['Betrag'].sum():,.2f} €</h3></span></div>")
                             editor_auszahlungen = st.data_editor(
