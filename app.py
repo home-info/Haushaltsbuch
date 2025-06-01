@@ -455,11 +455,10 @@ def main_app():
                 with kontostand_container_col1:
                     st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>Aktueller Kontostand:</b></span></div>")
                     KontostandIst_Input = st.number_input(label="Aktueller Kontostand (€)", format="%.2f", value=st.session_state.KontostandIst, label_visibility='collapsed')
-                    st.session_state.KontostandIst = KontostandIst_Input
                 with kontostand_container_col2:
                     st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>&nbsp;</b></span></div>")
                     if st.form_submit_button("Speichern"):
-                        # st.session_state.KontostandIst = KontostandIst_Input
+                        st.session_state.KontostandIst = KontostandIst_Input
                         with open('src/savings/kontostand', 'w') as f:
                             f.write(str(st.session_state.KontostandIst))
                         f.close()
