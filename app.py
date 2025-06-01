@@ -410,7 +410,6 @@ def main_app():
                                 contents = repo.get_contents('src/savings/SavingTargets.pkl')
                                 repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
                                 st.rerun()
-                    with target_col4:
                         erledigt = st.checkbox(label="Ausblenden", key=f"{target}_Status",value=st.session_state.SavingsDict[target]['status'])
                         if erledigt == True:
                             st.session_state.SavingsDict[target]['status'] = True
