@@ -354,6 +354,7 @@ def main_app():
                 use_container_width=True
             )
 
+            st.session_state.SavingsDict[termin]['einzahlungen'] = editor
             st.write(st.session_state.SavingsDict[termin]['einzahlungen'])
             st.divider()
 
