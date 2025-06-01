@@ -470,6 +470,8 @@ def main_app():
                         st.rerun()
 
             with kontostand_container_col1:
+                st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Kontostand Soll:</b></span> <span>{Kontostand_Soll:,.2f}&nbsp;€</span></div>")  # f2f2f4
+
                 if st.session_state.KontostandIst - Kontostand_Soll == 0:
                     st.html(f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #f2f2f4; border-radius: 5px; padding: 2px 5px;'><b>± 0.00&nbsp;€</b></span></div>")  # f2f2f4
                 if st.session_state.KontostandIst - Kontostand_Soll > 0:
