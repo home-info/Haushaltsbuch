@@ -378,7 +378,7 @@ def main_app():
                         with target_col1:
                             st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f} €</h3></span></div>")
                             editor_einzahlungen = st.data_editor(
-                                    st.session_state.SavingsDict[target]['einzahlungen'],
+                                    st.session_state.SavingsDict[target]['einzahlungen'].reset_index(drop=True),
                                     hide_index=True,
                                     num_rows="dynamic",
                                     column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
@@ -388,7 +388,7 @@ def main_app():
                         with target_col2:
                             st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Auszahlungen:</h3></span><span style='text-align: right'><h3>{st.session_state.SavingsDict[target]['auszahlungen']['Betrag'].sum():,.2f} €</h3></span></div>")
                             editor_auszahlungen = st.data_editor(
-                                st.session_state.SavingsDict[target]['auszahlungen'],
+                                st.session_state.SavingsDict[target]['auszahlungen'].reset_index(drop=True),
                                 hide_index=True,
                                 num_rows="dynamic",
                                 column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
