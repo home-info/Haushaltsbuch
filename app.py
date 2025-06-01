@@ -344,7 +344,8 @@ def main_app():
             st.session_state.SavingsDict = pickle.load(f)
         f.close()
 
-        st.write(st.session_state.SavingsDict)
+        for termin in st.session_state.SavingsDict:
+            st.write(termin)
 
 
 
