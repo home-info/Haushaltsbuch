@@ -453,7 +453,7 @@ def main_app():
             kontostand_container_col1, kontostand_container_col2 = st.columns([5, 1])
             with kontostand_container_col1:
                 st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>Aktueller Kontostand:</b></span></div>")
-                KontostandIst_Input = st.number_input(label="Aktueller Kontostand (€)", format="%,.2f", value=st.session_state.KontostandIst, label_visibility='collapsed')
+                KontostandIst_Input = st.number_input(label="Aktueller Kontostand (€)", format="%.2f", value=st.session_state.KontostandIst, label_visibility='collapsed')
         #     with kontostand_container_col2:
         #         st.html(
         #             f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>&nbsp;</b></span></div>")
