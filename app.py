@@ -130,7 +130,8 @@ def main_app():
             tab1_status_col = st.container()
             with tab1_col1:
                 st.session_state.setdefault("DATUM_KEY", f"{TODAY}")
-                Input_Date = st.text_input("Datum", key="DATUM_KEY")
+                if not 'InputDate' in st.session_state:
+                    st.session_state.InputDate = st.text_input("Datum", key="DATUM_KEY")
 
             with tab1_col2:
                 st.session_state.setdefault("CATEGORY_KEY", "")
