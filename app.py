@@ -400,14 +400,20 @@ def main_app():
                         if submitted:
                             st.session_state.SavingsDict[target]['einzahlungen'] = editor_einzahlungen
                             st.session_state.SavingsDict[target]['auszahlungen'] = editor_auszahlungen
-                            # st.rerun()
+                            with open('src/savings/SavingTargets.pkl', 'wb') as f:
+                                new_data = st.session_state.SavingsDict
+                                pickle.dump(new_data, f)
+                            f.close()
+                            with open('src/savings/SavingTargets.pkl', 'rb') as local_file:
+                                new_file = local_file.read()
+                            local_file.close()
+                            contents = repo.get_contents('src/savings/SavingTargets.pkl')
+                            repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
+                            st.rerun()
 
             #
             # if st.button('Änderungen speichern', key=f"button_{termin}"):
-            #     with open('src/savings/SavingTargets.pkl', 'wb') as f:
-            #         new_data = st.session_state.SavingsDict
-            #         pickle.dump(new_data, f)
-            #     f.close()
+
 
 
 
