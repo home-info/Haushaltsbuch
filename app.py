@@ -396,6 +396,7 @@ def main_app():
                                 key=f"editor_auszahlung_{target}",
                                 use_container_width=True
                             )
+
                         submitted = st.form_submit_button("Speichern", key=f"button_{target}")
                         if submitted:
                             st.session_state.SavingsDict[target]['einzahlungen'] = editor_einzahlungen
