@@ -339,8 +339,7 @@ def main_app():
 
     with tab4:
         st.title("Sparziele")
-
-        # Initialize a global dictionary with sample DataFrames
+        # Initialize global dictionary in session state
         if 'global_dict' not in st.session_state:
             st.session_state.global_dict = {
                 'table1': pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]}),
@@ -348,19 +347,14 @@ def main_app():
                 'table3': pd.DataFrame({'P': [13, 14, 15], 'Q': [16, 17, 18]})
             }
 
-        # Function to update global dictionary with edited data
-        def update_dict(key, edited_data):
-            st.session_state.global_dict[key] = edited_data
-
-        # Create a data editor for each entry in the dictionary
+        # Create a data editor for each dictionary entry
         for key, df in st.session_state.global_dict.items():
             st.write(f"Editing: {key}")
-            # Create a data editor with a unique key
+            # Create data editor with a unique key
             edited_df = st.data_editor(
                 df,
-                key=f"editor_{key}",
-                on_change=update_dict,  # Callback to update dictionary
-                args=(key, st.session_state[f"editor_{key}"]['edited_rows'])  # Pass key and edited data
+                key=f"editor_{key}",  # Unique key for each editor
+                num_rows="dynamic"  # Optional: Allow adding/removing rows
             )
             # Update the dictionary with the edited DataFrame
             st.session_state.global_dict[key] = edited_df
@@ -368,6 +362,11 @@ def main_app():
         # Display the updated dictionary for verification
         st.write("Current state of global_dict:")
         st.write(st.session_state.global_dict)
+
+
+
+
+
 
         with kontostand_container:
             st.subheader("Kontostand")
