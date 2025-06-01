@@ -389,6 +389,7 @@ def main_app():
                             submitted = st.form_submit_button("Speichern")
                             if submitted:
                                 st.session_state.SavingsDict[target]['einzahlungen'] = editor_einzahlungen
+                                st.rerun()
                             st.write(st.session_state.SavingsDict[target]['einzahlungen'])
                         with target_col2:
                             st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Auszahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayOut_Sum:,.2f} €</h3></span></div>")
