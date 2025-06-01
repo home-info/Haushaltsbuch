@@ -340,34 +340,151 @@ def main_app():
     with tab4:
         st.title("Sparziele")
 
-        # Initialize a global dictionary with sample DataFrames
-        if 'global_dict' not in st.session_state:
-            st.session_state.global_dict = {
-                'table1': pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]}),
-                'table2': pd.DataFrame({'X': [7, 8, 9], 'Y': [10, 11, 12]}),
-                'table3': pd.DataFrame({'P': [13, 14, 15], 'Q': [16, 17, 18]})
-            }
+        with open("src/savings/kontostand", "r") as f:
+            Kontostand_Ist = float(f.read())
+        f.close()
 
-        # Function to update global dictionary with edited data
-        def update_dict(key, edited_data):
-            st.session_state.global_dict[key] = edited_data
+        kontostand_container = st.container(border=True)
 
-        # Create a data editor for each entry in the dictionary
-        for key, df in st.session_state.global_dict.items():
-            st.write(f"Editing: {key}")
-            # Create a data editor with a unique key
-            edited_df = st.data_editor(
-                df,
-                key=f"editor_{key}",
-                on_change=update_dict,  # Callback to update dictionary
-                args=(key, st.session_state[f"editor_{key}"]['edited_rows'])  # Pass key and edited data
-            )
-            # Update the dictionary with the edited DataFrame
-            st.session_state.global_dict[key] = edited_df
+        Target_Index = 0
+        Kontostand_Soll = 0
 
-        # Display the updated dictionary for verification
-        st.write("Current state of global_dict:")
-        st.write(st.session_state.global_dict)
+        for file in sorted(os.listdir('src/savings')):
+            Target_FilePath = f'src/savings/{file}'
+            Target_FileName = Target_FilePath.rsplit('/', 1)[1]
+
+            if Target_FileName.startswith('target_'):
+                with open(Target_FilePath, 'rb') as f:
+                    st.session_state[Target_FileName] = pickle.load(f)
+                f.close()
+
+                if st.session_state[Target_FileName]['status'] == False:
+                    Target_Index += 1
+                    Target_PayIn_List = st.session_state[Target_FileName]['einzahlungen']
+                    Target_PayIn_Sum = sum(Target_PayIn_List['Betrag'])
+                    Kontostand_Soll += Target_PayIn_Sum
+                    Target_PayOut_List = st.session_state[Target_FileName]['auszahlungen']
+                    Target_PayOut_Sum = sum(Target_PayOut_List['Betrag'])
+                    Kontostand_Soll -= Target_PayOut_Sum
+
+                    with st.expander(
+                            label=f":{num2words(Target_Index)}:&nbsp;&nbsp;&nbsp;**{st.session_state[Target_FileName]['name']}**"):
+                        st.html(
+                            f"<div style='margin-bottom: 0px; display: flex; justify-content: space-between;'><span><h1>{st.session_state[Target_FileName]['name']}</h1></span><span style='text-align: right'><h1>{Target_PayIn_Sum:,.2f}&nbsp;€ von {st.session_state[Target_FileName]['ziel_summe']:,.2f}&nbsp;€</h1></span></div>")
+
+                        progress = Target_PayIn_Sum / st.session_state[Target_FileName]['ziel_summe']
+                        st.html(
+                            f"<div style='margin-bottom: -25px; display: flex; justify-content: space-between;'><span>Sparziel zu {progress * 100:.0f}&nbsp;%&nbsp;erreicht</span><span style='text-align: right'>Noch {st.session_state[Target_FileName]['ziel_summe'] - Target_PayIn_Sum:,.2f}&nbsp;€</span></div>")
+                        if progress > 1:
+                            st.progress(100)
+                        elif progress < 0:
+                            st.progress(0)
+                        else:
+                            st.progress(progress)
+
+                        target_col1, target_col2 = st.columns(2)
+                        with target_col1:
+                            st.html(
+                                f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayIn_Sum:,.2f} €</h3></span></div>")
+
+                            PayIn_EditorKey = f"{st.session_state[Target_FileName]['termin']}_PayIn_Temp"
+                            # Initialize temporary session state for edits
+                            if PayIn_EditorKey not in st.session_state:
+                                st.session_state[PayIn_EditorKey] = st.session_state[Target_FileName][
+                                    'einzahlungen'].copy()
+
+                            editor_Target_PayIn = st.data_editor(
+                                st.session_state[PayIn_EditorKey],
+                                hide_index=True,
+                                num_rows="dynamic",
+                                column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
+                                key=f"EditorKey_{PayIn_EditorKey}",
+                                use_container_width=True
+                            )
+
+                        with target_col2:
+                            st.html(
+                                f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Auszahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayOut_Sum:,.2f} €</h3></span></div>")
+
+                            PayOut_EditorKey = f"{st.session_state[Target_FileName]['termin']}_PayOut_Temp"
+                            if PayOut_EditorKey not in st.session_state:
+                                st.session_state[PayOut_EditorKey] = st.session_state[Target_FileName][
+                                    'auszahlungen'].copy()
+
+                            editor_Target_PayOut = st.data_editor(
+                                st.session_state[PayOut_EditorKey],
+                                hide_index=True,
+                                num_rows="dynamic",
+                                column_config={"Betrag": st.column_config.NumberColumn(format="%.2f €", step=0.01)},
+                                key=f"EditorKey_{PayOut_EditorKey}",
+                                use_container_width=True
+                            )
+                        target_col3, target_col4 = st.columns(2)
+                        with target_col3:
+                            st.write(st.session_state[Target_FileName])
+                            if st.button("Übernehmen", key=f"{Target_FileName}_Editor_Speichern"):
+                                # Update main session state only when saving
+                                st.session_state[Target_FileName]['einzahlungen'] = st.session_state[PayIn_EditorKey]
+                                st.session_state[Target_FileName]['auszahlungen'] = st.session_state[PayOut_EditorKey]
+                                with open(Target_FilePath, 'wb') as f:
+                                    pickle.dump(st.session_state[Target_FileName], f)
+                                with open(Target_FilePath, "rb") as local_file:
+                                    new_file = local_file.read()
+                                contents = repo.get_contents(Target_FilePath)
+                                repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
+                                st.rerun()
+
+                        with target_col4:
+                            erledigt = st.checkbox(label="Ausblenden", key=f"{Target_FileName}_Status",
+                                                   value=st.session_state[Target_FileName]['status'])
+                            if erledigt == True:
+                                st.session_state[Target_FileName]['status'] = True
+                                with open(Target_FilePath, 'wb') as f:
+                                    pickle.dump(st.session_state[Target_FileName], f)
+                                f.close()
+                                with open(Target_FilePath, "rb") as local_file:
+                                    new_file = local_file.read()
+                                local_file.close()
+                                contents = repo.get_contents(Target_FilePath)
+                                repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
+                                st.rerun()
+
+        with st.expander(label='*️⃣&nbsp;&nbsp;&nbsp;**Neues Sparziel**'):
+            name_input = st.text_input(label="Name")
+            SpaZi_Input_Col1, SpaZi_Input_Col2 = st.columns(2)
+            with SpaZi_Input_Col1:
+                termin_input = st.text_input(label="Termin (YYYY-MM-DD)")
+            with SpaZi_Input_Col2:
+                zielSumme_input = st.number_input(label="Sparziel (€)", format="%.2f")
+
+            if st.button("Hinzufügen"):
+                new_dict = {
+                    "status": False,
+                    "name": str(name_input),
+                    "termin": str(termin_input),
+                    "ziel_summe": float(zielSumme_input),
+                    "einzahlungen": pd.DataFrame({
+                        "Datum": ["leer"],
+                        "Vermerk": ["leer"],
+                        "Betrag": [0.0]  # Use float instead of integer
+                    }).astype({"Betrag": "float64"}),
+                    "auszahlungen": pd.DataFrame({
+                        "Datum": ["leer"],
+                        "Betrag": [0.0]  # Use float instead of integer
+                    }).astype({"Betrag": "float64"})
+                }
+
+                if not os.path.exists(f"src/savings/target_{new_dict['termin']}.pkl"):
+                    with open(f"src/savings/target_{new_dict['termin']}.pkl", "wb") as f:
+                        pickle.dump(new_dict, f)
+                    f.close()
+                    with open(f"src/savings/target_{new_dict['termin']}.pkl", "rb") as local_file:
+                        new_file = local_file.read()
+                    local_file.close()
+                    repo.create_file(path=f"src/savings/target_{new_dict['termin']}.pkl", message="New file.", content=new_file, branch="main")
+                    st.rerun()
+                else:
+                    st.error("Ein Sparziel zu diesem Termin existiert bereits. Termin ändern!")
 
         with kontostand_container:
             st.subheader("Kontostand")
