@@ -344,8 +344,8 @@ def main_app():
             st.session_state.SavingsDict = pickle.load(f)
         f.close()
 
-        for termin in st.session_state.SavingsDict:
-            st.write(termin)
+        for termin in sorted(st.session_state.SavingsDict):
+            st.write(st.session_state.SavingsDict[termin]['einzahlungen'])
 
 
 
