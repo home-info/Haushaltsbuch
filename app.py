@@ -353,8 +353,9 @@ def main_app():
                 key=f"editor_einzahlung_{termin}",
                 use_container_width=True
             )
-            
+
             st.write(st.session_state.SavingsDict[termin]['einzahlungen'])
+            st.divider()
 
 
 
