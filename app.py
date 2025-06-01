@@ -319,23 +319,23 @@ def main_app():
 
                 with subcol4:
                     st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Ausgaben:</b></span> <span style='color: black !important; background-color: #fac1be; border-radius: 5px; padding: 2px 5px;'><b>{balance_sheet[month]['Expenses']:,.2f} €</b></span></div>")  # fdeceb
-                    MonthlyExpenses_Category, MonthlyExpenses_CategorySum = zip(*balance_sheet[month]['Expenses_Data'])
-                    start_color = np.array([.86, .23, .15])
-                    end_color = np.array([.94, .74, .25])
-                    colors = [start_color, end_color]
-                    n_bins = len(MonthlyExpenses_Category)
-                    cmap = mcolors.LinearSegmentedColormap.from_list("custom", colors, N=n_bins)
                     try:
+                        MonthlyExpenses_Category, MonthlyExpenses_CategorySum = zip(*balance_sheet[month]['Expenses_Data'])
+                        start_color = np.array([.86, .23, .15])
+                        end_color = np.array([.94, .74, .25])
+                        colors = [start_color, end_color]
+                        n_bins = len(MonthlyExpenses_Category)
+                        cmap = mcolors.LinearSegmentedColormap.from_list("custom", colors, N=n_bins)
                         bar_colors = [cmap(i / (n_bins - 1)) for i in range(n_bins)]
+                        fig, ax = plt.subplots()
+                        ax.bar(MonthlyExpenses_Category, MonthlyExpenses_CategorySum, color=bar_colors)
+                        plt.xlabel('')
+                        plt.xticks(rotation=-45, ha='left', rotation_mode='anchor')
+                        plt.title(f"Ausgaben im {Month_Verbal}")
+                        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x:,.0f} €'))
+                        st.pyplot(fig, use_container_width=True, clear_figure=True)
                     except:
-                        bar_colors = [cmap(i / (n_bins)) for i in range(n_bins)]
-                    fig, ax = plt.subplots()
-                    ax.bar(MonthlyExpenses_Category, MonthlyExpenses_CategorySum, color=bar_colors)
-                    plt.xlabel('')
-                    plt.xticks(rotation=-45, ha='left', rotation_mode='anchor')
-                    plt.title(f"Ausgaben im {Month_Verbal}")
-                    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x:,.0f} €'))
-                    st.pyplot(fig, use_container_width=True, clear_figure=True)
+                        pass
 
     with tab4:
         st.title("Sparziele")
