@@ -410,20 +410,20 @@ def main_app():
                                 contents = repo.get_contents('src/savings/SavingTargets.pkl')
                                 repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
                                 st.rerun()
-                        with target_col4:
-                            erledigt = st.checkbox(label="Ausblenden", key=f"{target}_Status",value=st.session_state.SavingsDict[target]['status'])
-                            if erledigt == True:
-                                st.session_state.SavingsDict[target]['status'] = True
-                                with open('src/savings/SavingTargets.pkl', 'wb') as f:
-                                    new_data = st.session_state.SavingsDict
-                                    pickle.dump(new_data, f)
-                                f.close()
-                                with open('src/savings/SavingTargets.pkl', 'rb') as local_file:
-                                    new_file = local_file.read()
-                                local_file.close()
-                                contents = repo.get_contents('src/savings/SavingTargets.pkl')
-                                repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
-                                st.rerun()
+                    with target_col4:
+                        erledigt = st.checkbox(label="Ausblenden", key=f"{target}_Status",value=st.session_state.SavingsDict[target]['status'])
+                        if erledigt == True:
+                            st.session_state.SavingsDict[target]['status'] = True
+                            with open('src/savings/SavingTargets.pkl', 'wb') as f:
+                                new_data = st.session_state.SavingsDict
+                                pickle.dump(new_data, f)
+                            f.close()
+                            with open('src/savings/SavingTargets.pkl', 'rb') as local_file:
+                                new_file = local_file.read()
+                            local_file.close()
+                            contents = repo.get_contents('src/savings/SavingTargets.pkl')
+                            repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
+                            st.rerun()
 
         with st.expander(label='*️⃣&nbsp;&nbsp;&nbsp;**Neues Sparziel**'):
             with st.form("Neues Sparziel", border=False):
