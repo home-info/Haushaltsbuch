@@ -419,7 +419,7 @@ def main_app():
                                 key=f"EditorKey_{PayOut_EditorKey}",
                                 use_container_width=True
                             )
-
+                        target_col3, target_col4 = st.columns(2)
                         with target_col3:
                             if st.button("Übernehmen", key=f"{Target_FileName}_Editor_Speichern"):
                                 # Update main session state only when saving
