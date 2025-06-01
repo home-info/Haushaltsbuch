@@ -397,7 +397,7 @@ def main_app():
                                 use_container_width=True
                             )
 
-                        submitted = st.form_submit_button("Speichern", key=f"button_{target}")
+                        submitted = st.form_submit_button("Speichern")
                         if submitted:
                             st.session_state.SavingsDict[target]['einzahlungen'] = editor_einzahlungen
                             st.session_state.SavingsDict[target]['auszahlungen'] = editor_auszahlungen
