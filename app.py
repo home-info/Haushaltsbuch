@@ -377,7 +377,7 @@ def main_app():
                     with st.form(f"form_einzahlung_{target}", border=False):
                         target_col1, target_col2 = st.columns(2)
                         with target_col1:
-                            st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{Target_PayIn_Sum:,.2f} €</h3></span></div>")
+                            st.html(f"<div style='margin-bottom: -30px; display: flex; justify-content: space-between;'><span><h3>Einzahlungen:</h3></span><span style='text-align: right'><h3>{st.session_state.SavingsDict[target]['einzahlungen']['Betrag'].sum():,.2f} €</h3></span></div>")
                             editor = st.data_editor(
                                     st.session_state.SavingsDict[target]['einzahlungen'],
                                     hide_index=True,
