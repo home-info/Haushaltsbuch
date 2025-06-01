@@ -419,15 +419,18 @@ def main_app():
                 with SpaZi_Input_Col2:
                     zielSumme_input = st.number_input(label="Sparziel (€)", format="%.2f")
 
-                if st.form_submit_button("Hinzufügen"):
-                    st.session_state.SavingsDict[termin_input] = {
-                        'status': False,
-                        'name': str(name_input),
-                        'ziel_summe': float(zielSumme_input),
-                        'einzahlungen': pd.DataFrame([], columns=['Datum', 'Vermerk', 'Betrag']),
-                        'auszahlungen': pd.DataFrame([], columns=['Datum', 'Betrag'])
-                    }
-                    st.rerun()
+                if termin_input in st.session_state.SavingsDict:
+                    st.error("Anderen Termin eingeben!")
+                else:
+                    if st.form_submit_button("Hinzufügen"):
+                        st.session_state.SavingsDict[termin_input] = {
+                            'status': False,
+                            'name': str(name_input),
+                            'ziel_summe': float(zielSumme_input),
+                            'einzahlungen': pd.DataFrame([], columns=['Datum', 'Vermerk', 'Betrag']),
+                            'auszahlungen': pd.DataFrame([], columns=['Datum', 'Betrag'])
+                        }
+                        st.rerun()
 
 
 
