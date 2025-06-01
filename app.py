@@ -394,7 +394,7 @@ def main_app():
                                 key=f"editor_auszahlung_{target}",
                                 use_container_width=True
                             )
-                        target_col3, target_col4 = st.columns([6,2])
+                        target_col3, target_col4 = st.columns([5,1])
                         with target_col3:
                             submitted = st.form_submit_button("Speichern")
                             if submitted:
