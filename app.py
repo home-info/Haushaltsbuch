@@ -368,41 +368,41 @@ def main_app():
 
 
 
-        with kontostand_container:
-            st.subheader("Kontostand")
-            kontostand_container_col1, kontostand_container_col2 = st.columns([5, 1])
-            with kontostand_container_col1:
-                st.html(
-                    f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>Aktueller Kontostand:</b></span></div>")
-                Kontostand_Ist_Input = st.number_input(label="Aktueller Kontostand (€)", format="%.2f",
-                                                       value=Kontostand_Ist, label_visibility='collapsed')
-            with kontostand_container_col2:
-                st.html(
-                    f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>&nbsp;</b></span></div>")
-                if st.button("Speichern", key="kontostand-speichern"):
-                    Kontostand_Ist = Kontostand_Ist_Input
-                    with open('src/savings/kontostand', 'w') as f:
-                        f.write(str(Kontostand_Ist))
-                    f.close()
-                    with open('src/savings/kontostand', "rb") as local_file:
-                        new_file = local_file.read()
-                    local_file.close()
-                    contents = repo.get_contents('src/savings/kontostand')
-                    repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
-                    st.rerun()
-
-            Kontostand_Differenz = Kontostand_Ist - Kontostand_Soll
-
-            with kontostand_container_col1:
-                if Kontostand_Differenz == 0:
-                    st.html(
-                        f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #f2f2f4; border-radius: 5px; padding: 2px 5px;'><b>± 0.00&nbsp;€</b></span></div>")  # f2f2f4
-                if Kontostand_Differenz > 0:
-                    st.html(
-                        f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #b2ebb8; border-radius: 5px; padding: 2px 5px;'><b>+ {Kontostand_Differenz:,.2f}&nbsp;€</b></span></div>")
-                if Kontostand_Differenz < 0:
-                    st.html(
-                        f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #fac1be; border-radius: 5px; padding: 2px 5px;'><b>– {Kontostand_Differenz * -1:,.2f}&nbsp;€</b></span></div>")
+        # with kontostand_container:
+        #     st.subheader("Kontostand")
+        #     kontostand_container_col1, kontostand_container_col2 = st.columns([5, 1])
+        #     with kontostand_container_col1:
+        #         st.html(
+        #             f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>Aktueller Kontostand:</b></span></div>")
+        #         Kontostand_Ist_Input = st.number_input(label="Aktueller Kontostand (€)", format="%.2f",
+        #                                                value=Kontostand_Ist, label_visibility='collapsed')
+        #     with kontostand_container_col2:
+        #         st.html(
+        #             f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>&nbsp;</b></span></div>")
+        #         if st.button("Speichern", key="kontostand-speichern"):
+        #             Kontostand_Ist = Kontostand_Ist_Input
+        #             with open('src/savings/kontostand', 'w') as f:
+        #                 f.write(str(Kontostand_Ist))
+        #             f.close()
+        #             with open('src/savings/kontostand', "rb") as local_file:
+        #                 new_file = local_file.read()
+        #             local_file.close()
+        #             contents = repo.get_contents('src/savings/kontostand')
+        #             repo.update_file(contents.path, "Overwrite with new file", new_file, contents.sha)
+        #             st.rerun()
+        #
+        #     Kontostand_Differenz = Kontostand_Ist - Kontostand_Soll
+        #
+        #     with kontostand_container_col1:
+        #         if Kontostand_Differenz == 0:
+        #             st.html(
+        #                 f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #f2f2f4; border-radius: 5px; padding: 2px 5px;'><b>± 0.00&nbsp;€</b></span></div>")  # f2f2f4
+        #         if Kontostand_Differenz > 0:
+        #             st.html(
+        #                 f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #b2ebb8; border-radius: 5px; padding: 2px 5px;'><b>+ {Kontostand_Differenz:,.2f}&nbsp;€</b></span></div>")
+        #         if Kontostand_Differenz < 0:
+        #             st.html(
+        #                 f"<div style='display: flex; justify-content: space-between;'><span>Kontostand Soll:&nbsp;&nbsp;&nbsp;<b>{Kontostand_Soll:,.2f}&nbsp;€</b></span> <span style='color: black !important; background-color: #fac1be; border-radius: 5px; padding: 2px 5px;'><b>– {Kontostand_Differenz * -1:,.2f}&nbsp;€</b></span></div>")
 
 # Display login page or main app based on authentication status
 if not st.session_state["authenticated"]:
