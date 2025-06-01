@@ -357,10 +357,6 @@ def main_app():
                 with open(Target_FilePath, 'rb') as f:
                     st.session_state[Target_FileName] = pickle.load(f)
                 f.close()
-                st.session_state[Target_FileName]['einzahlungen'] = st.session_state[Target_FileName][
-                    'einzahlungen'].astype({"Betrag": "float64"})
-                st.session_state[Target_FileName]['auszahlungen'] = st.session_state[Target_FileName][
-                    'auszahlungen'].astype({"Betrag": "float64"})
 
                 if st.session_state[Target_FileName]['status'] == False:
                     Target_Index += 1
