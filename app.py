@@ -458,7 +458,7 @@ def main_app():
                     st.session_state.KontostandIst = KontostandIst_Input
                 with kontostand_container_col2:
                     st.html(f"<div style='margin-bottom: -15px; display: flex; justify-content: space-between;'><span><b>&nbsp;</b></span></div>")
-                    if st.form_submit_button("Speichern", key="kontostand-speichern"):
+                    if st.form_submit_button("Speichern"):
                         # st.session_state.KontostandIst = KontostandIst_Input
                         with open('src/savings/kontostand', 'w') as f:
                             f.write(str(st.session_state.KontostandIst))
