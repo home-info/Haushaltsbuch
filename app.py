@@ -477,7 +477,7 @@ def main_app():
                 if st.session_state.KontostandIst - Kontostand_Soll > 0:
                     st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Differenz:</b></span> <span style='color: black !important; background-color: #b2ebb8; border-radius: 5px; padding: 2px 5px;'><b>+ {st.session_state.KontostandIst - Kontostand_Soll:,.2f}&nbsp;€</b></span></div>")
                 if st.session_state.KontostandIst - Kontostand_Soll < 0:
-                    st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Differenz:</b></span> <span style='color: black !important; background-color: #fac1be; border-radius: 5px; padding: 2px 5px;'><b>– {st.session_state.KontostandIst - Kontostand_Soll:,.2f}&nbsp;€</b></span></div>")
+                    st.html(f"<div style='display: flex; justify-content: space-between;'><span><b>Differenz:</b></span> <span style='color: black !important; background-color: #fac1be; border-radius: 5px; padding: 2px 5px;'><b>– {(st.session_state.KontostandIst - Kontostand_Soll)*-1:,.2f}&nbsp;€</b></span></div>")
 
 # Display login page or main app based on authentication status
 if not st.session_state["authenticated"]:
